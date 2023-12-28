@@ -1,7 +1,12 @@
 'use strict';
 
-
+/**
+ * Listen for incoming changes from Bluetti device.
+ * This is where you can update the UI or save data to the database.
+ */
 window.eventEmitter.on("update", (data) => {
+  // updated data from bluetti device
+  //console.log(JSON.parse(data));
   document.querySelector("#details").innerHTML = syntaxHighlight(data);
 });
 
