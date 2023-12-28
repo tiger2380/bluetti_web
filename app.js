@@ -1,13 +1,7 @@
 'use strict';
 
-import { sleep } from "./utils.js";
-import fields from "./devices/AC300.js";
-import { QueryRangeCommand } from "./devices/Commands.js";
-import eventEmitter from "./EventEmitter.js";
-import { syntaxHighlight } from "./utils.js";
 
-
-eventEmitter.on("update", (data) => {
+window.eventEmitter.on("update", (data) => {
   document.querySelector("#details").innerHTML = syntaxHighlight(data);
 });
 

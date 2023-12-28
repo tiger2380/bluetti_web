@@ -8,5 +8,3 @@ const FIELD_TYPE = {
   decimal: "decimal",
   bool: "bool",
 };
-
-export default FIELD_TYPE

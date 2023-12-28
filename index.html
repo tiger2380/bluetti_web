@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="app.css">
     <style>
         pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
-.string { color: green; }
-.number { color: darkorange; }
-.boolean { color: blue; }
-.null { color: magenta; }
-.key { color: red; }
+        .string { color: green; }
+        .number { color: darkorange; }
+        .boolean { color: blue; }
+        .null { color: magenta; }
+        .key { color: red; }
     </style>
 </head>
 <body>
@@ -28,6 +28,12 @@
         <p>AC OUTPUT STATE: <span id="ac_output_state"></span></p>
         <p>DC OUTPUT STATE: <span id="dc_output_state"></span></p>-->
     </div>
-    <script src="app.js" type="module"></script>
+    <script src="EventEmitter.js"></script>
+    <script src="utils.js"></script>
+    <script src="enums.js"></script>
+    <script src="devices/Parser.js"></script>
+    <script src="devices/Commands.js"></script>
+    <script src="devices/AC300.js"> </script>
+    <script src="app.js"></script>
 </body>
 </html>

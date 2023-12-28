@@ -1,6 +1,3 @@
-import { ReadSingleRegisterCommand } from "./Commands.js";
-import FIELD_TYPE from "../enums.js";
-
 const fields = [
   new ReadSingleRegisterCommand(
     "device_type",
@@ -226,5 +223,3 @@ const fields = [
     FIELD_TYPE.decimal
   ),
 ];
-
-export default fields;

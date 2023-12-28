@@ -1,5 +1,3 @@
-import FIELD_TYPE from "../enums.js";
-
 /**
  * Converts an array buffer to a string.
  *
@@ -120,5 +118,3 @@ const parse_field = (value, type, scale) => {
     }
   }
 };
-
-export default parse_field;

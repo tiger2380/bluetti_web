@@ -1,21 +1,17 @@
-import { crc16 } from "../utils.js";
-import parse_field from "./Parser.js";
-import eventEmitter from "../EventEmitter.js";
-
 const parsed = {};
 var targetProxy = new Proxy(parsed, {
   set: function (target, key, value) {
     if (typeof value === 'string' && "undefined" != value.substring(0, 9)) {
       target[key] = value;
 
-      eventEmitter.emit("update", target);
+      window.eventEmitter.emit("update", target);
     }
     return true;
   },
 });
 
 
-export class ReadSingleRegisterCommand {
+class ReadSingleRegisterCommand {
   constructor(name, page, offset, length = "", unit, FIELD_TYPE, scale = 0) {
     this.name = name;
     this.page = page;
@@ -100,7 +96,7 @@ export class ReadSingleRegisterCommand {
   }
 }
 
-export class QueryRangeCommand {
+class QueryRangeCommand {
   constructor(page, offset, length) {
     this.page = page;
     this.offset = offset;
@@ -139,7 +135,7 @@ export class QueryRangeCommand {
   }
 }
 
-export class WriteSingleRegisterCommand {
+class WriteSingleRegisterCommand {
   constructor(page, offset, value) {
     this.page = page;
     this.offset = offset;

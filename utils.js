@@ -1,4 +1,4 @@
-export function syntaxHighlight(json) {
+function syntaxHighlight(json) {
   if (typeof json != "string") {
     json = JSON.stringify(json, undefined, 2);
   }
@@ -26,7 +26,7 @@ export function syntaxHighlight(json) {
   );
 }
 
-export function crc16(data) {
+function crc16(data) {
   let crc = 0xffff;
   for (let i = 0; i < data.length; i++) {
     crc ^= data[i];
@@ -42,23 +42,23 @@ export function crc16(data) {
   return crc;
 }
 
-export function crc16Buffer(data) {
+function crc16Buffer(data) {
     const crc = crc16(data);
     const buffer = Buffer.alloc(2);
     buffer.writeUInt16LE(crc, 0);
     return buffer;
 }
 
-export function crc16String(data) {
+function crc16String(data) {
     const crc = crc16(data);
     return crc.toString(16);
 }
 
-export function crc16HexString(data) {
+function crc16HexString(data) {
     const crc = crc16(data);
     return crc.toString(16).padStart(4, "0");
 }
 
-export const sleep = async (ms) => {
+const sleep = async (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
