@@ -35,9 +35,9 @@ let options = {
   //acceptAllDevices: true,
   optionalServices: [SERVICEUUID],
   filters: [
-    {
-      namePrefix: "AC300",
-    },
+    { namePrefix: "AC300" },
+    { namePrefix: "AC200" },
+    { namePrefix: "AC500" },
   ],
 };
 
@@ -236,6 +236,18 @@ button.addEventListener("click", async () => {
     bluetoothDevice = await navigator.bluetooth.requestDevice(options);
     console.log("Device discovered", bluetoothDevice);
     bluetoothDevice.addEventListener("gattserverdisconnected", onDisconnected);
+
+    if (bluetoothDevice.name.includes('AC200')) {
+      const script = document.createElement('script');
+      script.src = `devices/AC200.js`;
+      document.head.appendChild(script);
+    } else if (bluetoothDevice.name.includes('AC300')) {
+      const script = document.createElement('script');
+      script.src = `devices/AC300.js`;
+      document.head.appendChild(script);
+    }
+
+    log(`> Device: ${bluetoothDevice.name}`);
 
     connect();
   } catch (error) {
