@@ -186,7 +186,15 @@ function connect() {
             if (doSkip) {
               continue;
             }
-            await field.parse(response);
+
+            if (field.isValidResponse(response)) {
+              await field.parse(
+                field.page,
+                field.offest,
+                response,
+                field.length
+              );
+            }
           }
           /*document.getElementById("ac_output").innerHTML =
             parsed.ac_output_power;
@@ -204,6 +212,7 @@ function connect() {
             mode: "no-cors",
             body: JSON.stringify(parsed),
           });*/
+          sleep(10000);
           loggingCommand();
         } catch (error) {
           console.error("Error when sending command", error);

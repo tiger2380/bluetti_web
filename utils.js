@@ -42,11 +42,11 @@ function crc16(data) {
   return crc;
 }
 
-function crc16Buffer(data) {
-    const crc = crc16(data);
-    const buffer = Buffer.alloc(2);
-    buffer.writeUInt16LE(crc, 0);
-    return buffer;
+function convertCRC16ToBytes(crc16) {
+  const uint16Array = new Uint16Array([crc16]);
+  const buffer = uint16Array.buffer;
+  const bytes = new Uint8Array(buffer);
+  return bytes;
 }
 
 function crc16String(data) {

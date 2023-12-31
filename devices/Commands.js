@@ -37,10 +37,14 @@ class ReadSingleRegisterCommand {
    * @param {any} response - The response to parse.
    * @return {Promise<any>} A promise that resolves to the parsed value.
    */
-  async parse(response) {
+  async parse(page, offset, response, length) {
     return new Promise((resolve, reject) => {
       if (!response) {
         reject("No response");
+      }
+
+      if (!(response instanceof DataView)) {
+        throw new Error("Invalid response type. Expected DataView.");
       }
 
       /**
@@ -53,13 +57,13 @@ class ReadSingleRegisterCommand {
        */
       const dataview = new DataView(filterResponse);
 
-      if (dataview.byteLength !== this.length * 2) {
+      /*if (dataview.byteLength !== this.responseSize()) {
         reject(
-          `Invalid response length. Expected ${this.length * 2}, got ${
+          `Invalid response length. Expected ${this.responseSize()}, got ${
             dataview.byteLength
           }`
         );
-      }
+      }*/
 
       /**
        * Parse the field from the data view.
@@ -67,10 +71,28 @@ class ReadSingleRegisterCommand {
        */
       this.value = parse_field(dataview, this.FIELD_TYPE, this.scale);
 
-      targetProxy[this.name] = this.value + this.unit;
-      parsed[this.name] = this.value + this.unit;
+      targetProxy[this.name] = this.value; // + this.unit;
+      parsed[this.name] = this.value; // + this.unit;
       resolve(parsed[this.name]);
     });
+  }
+
+  isValidResponse(response) {
+    if (response.byteLength < 3) {
+      return false;
+    }
+
+    let crc = crc16(
+      new Uint8Array(response.buffer, 0, response.byteLength - 2)
+    );
+    let crcBytes = new Uint8Array([crc]);
+    let responseCrc = new Uint8Array(
+      response.buffer,
+      response.byteLength - 2,
+      1
+    );
+
+    return crcBytes[0] === responseCrc[0];
   }
 
   /**
@@ -153,6 +175,7 @@ class WriteSingleRegisterCommand {
     // Assuming modbus_crc is a function that calculates the CRC
     let cmd = new Uint8Array(buffer);
     let crc = crc16(cmd.subarray(0, cmd.length - 2));
+    console.log("crc", crc);
     dataview.setUint16(6, crc, true);
 
     this.cmd = cmd;
