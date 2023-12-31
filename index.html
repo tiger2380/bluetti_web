@@ -48,6 +48,28 @@
         const batteryCtx = document.getElementById('batteryChart');
         const powerCtx = document.getElementById('powerChart');
 
+        const batteryPlugin = {
+            id: 'batteryPlugin',
+            afterDraw: (chart) => {
+                const { ctx, config, data, chartArea: { top, bottom, left, right, height, width } } = chart;
+                ctx.restore();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fillRect(left, top, width, height);
+
+                const fontSize = (height / 114).toFixed(2);
+                ctx.font = fontSize + "em sans-serif";
+                ctx.textBaseline = "middle";
+
+                const text = (chart.data.datasets[0].data[0] || 0) + "%",
+                    textX = Math.round((width - ctx.measureText(text).width) / 2),
+                    textY = height - 50;
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+            }
+        };
+
         const powerChart = new Chart(powerCtx, {
             type: 'doughnut',
             data: {
@@ -73,7 +95,7 @@
                 legend: {
                     display: false
                 }
-            }
+            },
         });
 
         const chart = new Chart(batteryCtx, {
@@ -82,7 +104,7 @@
                 labels: ['battery'],
                 datasets: [{
                     label: 'Battery Percentage',
-                    data: [5, 10],
+                    data: [0, 0],
                     backgroundColor: [
                         'rgba(159, 190, 253, 1)',
                         'rgba(255, 255, 255, 1)',
@@ -97,10 +119,18 @@
             },
             options: {
                 aspectRatio: 2,
-                legend: {
-                    display: false
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        filter: (tooltipItem) => {
+                            return tooltipItem.dataIndex === 0;
+                        },
+                    }
                 }
-            }
+            },
+            plugins: [batteryPlugin]
         });
 
 
