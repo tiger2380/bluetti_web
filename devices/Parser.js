@@ -65,10 +65,10 @@ const parse_string_field = (value) => {
  */
 const parse_serial_number_field = (value) => {
   let values = [
-    value.getUint8(0, false),
-    value.getUint8(2, false),
-    value.getUint8(4, false),
-    value.getUint8(6, false),
+    value.getUint16(0, false),
+    value.getUint16(2, false),
+    value.getUint16(4, false),
+    value.getUint16(6, false),
   ];
   return values[0] | (values[1] << 16) | (values[2] << 32) | (values[3] << 48);
 };
