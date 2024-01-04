@@ -1,5 +1,8 @@
 # Bluetti Web (Data Extraction)
 ** Only works for AC200Max, AC300 and AC500 **
+I will be adding more devices later. So stay tuned.
+
+Also this is just a concept. Updating the UI and add more functionalities are in the near future.
 
 This is a simple Javascript-based site that connects to a Bluetti device and extracts data via BlueTooth.
 
