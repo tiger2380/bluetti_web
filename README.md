@@ -2,9 +2,9 @@
 ** Only works for AC200Max, AC300 and AC500 **
 I will be adding more devices later. So stay tuned.
 
-Also this is just a concept. Updating the UI and add more functionalities are in the near future.
+Also, this is just a concept. Updating the UI and adding more functionalities will be done soon.
 
-This is a simple Javascript-based site that connects to a Bluetti device and extracts data via BlueTooth.
+A simple Javascript-based site that connects to a Bluetti device and extracts data via BlueTooth.
 
   1. Download or clone this repository
   2. Extract/open that repo that you just downloaded/cloned.
