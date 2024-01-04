@@ -49,8 +49,11 @@
           <canvas id="batteryChart" style="flex: 1"></canvas>
           <canvas id="powerChart" style="flex: 1"></canvas>
         </div>
+        <hr/>
         <button onClick="myChart.resetZoom()">Reset Zoom</button>
         <canvas id="myChart"></canvas>
+        <hr/>
+        <canvas id="batteryLineChart"></canvas>
       </div>
       <!--<p>AC OUTPUT: <span id="ac_output"></span></p>
         <p>AC INPUT POWER: <span id="ac_input"></span></p>
@@ -78,6 +81,7 @@
       const ctx = document.getElementById("myChart");
       const batteryCtx = document.getElementById("batteryChart");
       const powerCtx = document.getElementById("powerChart");
+      const batteryLineCtx = document.getElementById("batteryLineChart");
 
       const batteryPlugin = {
         id: "batteryPlugin",
@@ -203,14 +207,6 @@
               fill: true,
             },
             {
-              label: "Battery",
-              data: [0, 0, 0, 0],
-              backgroundColor: ["rgba(255, 206, 86, 0.2)"],
-              borderColor: ["rgba(255, 206, 86, 1)"],
-              borderWidth: 1,
-              fill: true,
-            },
-            {
               label: "DC Input",
               data: [0, 0, 0, 0],
               backgroundColor: ["rgba(75, 192, 192, 0.2)"],
@@ -287,7 +283,91 @@
         now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
       );
 
+      const batteryLineChart = new Chart(batteryLineCtx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: "Battery",
+              data: [0, 0, 0, 0],
+              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+              borderColor: ["rgba(255, 99, 132, 1)"],
+              borderWidth: 1,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          interaction: {
+            intersect: false,
+            mode: "index",
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Time",
+              },
+            },
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Battery (SoC %)",
+              },
+            },
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Battery View",
+            },
+            subtitle: {
+              display: true,
+              text: "Click and drag to zoom | ctrl+drag to pan",
+              color: "gray",
+              font: {
+                size: 12,
+                family: "arial, sans-serif",
+                weight: "normal",
+              },
+              padding: {
+                bottom: 10,
+              },
+            },
+            zoom: {
+              zoom: {
+                drag: {
+                  enabled: true,
+                },
+                mode: "x",
+                onZoomComplete: (chart) => {
+                  const zoomLevel = chart.chart.getZoomLevel();
+                  if (zoomLevel < 1) {
+                    chart.chart.resetZoom();
+                  }
+                },
+              },
+              pan: {
+                enabled: true,
+                mode: "x",
+                modifierKey: "ctrl",
+              },
+            },
+          },
+        },
+      });
+
+      window.batteryLineChart = batteryLineChart;
+
+      batteryLineChart.data.labels.push(
+        now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
+      );
+
       myChart.update();
+      batteryLineChart.update();
+      
       window.eventEmitter.on("update", (data) => {
         const time = new Date();
         const timeStr =
@@ -308,13 +388,11 @@
           myChart.data.datasets[0].data = [];
           myChart.data.datasets[1].data = [];
           myChart.data.datasets[2].data = [];
-          myChart.data.datasets[3].data = [];
         }
 
         myChart.data.datasets[0].data.push(data.ac_output_power);
         myChart.data.datasets[1].data.push(data.ac_input_power);
-        myChart.data.datasets[2].data.push(data.battery);
-        myChart.data.datasets[3].data.push(data.dc_input_power);
+        myChart.data.datasets[2].data.push(data.dc_input_power);
 
         //if (time.getMinutes() === 0 && time.getSeconds() === 0) {
         myChart.data.labels.push(formatAMPM(time));
@@ -331,6 +409,10 @@
         powerChart.data.datasets[0].data[0] = data.dc_input_power;
         powerChart.data.datasets[0].data[1] = data.ac_output_power;
         powerChart.update();
+
+        batteryLineChart.data.labels.push(formatAMPM(time));
+        batteryLineChart.data.datasets[0].data.push(data.battery);
+        batteryLineChart.update();
       });
     </script>
   </body>
