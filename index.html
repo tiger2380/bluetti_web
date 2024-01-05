@@ -6,6 +6,9 @@
     <title>BlueTooth - Bluetti</title>
     <link rel="stylesheet" href="app.css" />
     <style>
+      body {
+        background-color: rgb(41, 37, 41);
+      }
       pre {
         outline: 1px solid #ccc;
         padding: 5px;
@@ -93,7 +96,7 @@
             chartArea: { top, bottom, left, right, height, width },
           } = chart;
           ctx.restore();
-          ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+          ctx.fillStyle = "rgba(255, 255, 255, 0)";
           ctx.fillRect(left, top, width, height);
 
           const fontSize = (height / 114).toFixed(2);
@@ -104,7 +107,7 @@
             textX = Math.round((width - ctx.measureText(text).width) / 2),
             textY = height - 50;
 
-          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+          ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
           ctx.fillText(text, textX, textY);
           ctx.save();
         },
@@ -122,8 +125,8 @@
                 "rgba(255, 99, 132, 1)",
                 "rgba(54, 162, 235, 1)",
               ],
-              borderColor: ["rgba(255, 255, 255 ,1)", "rgba(255, 255, 255 ,1)"],
-              borderWidth: 5,
+              borderColor: ["rgba(255, 255, 255 ,1)", "rgba(255, 255, 255 ,0.2)"],
+              borderWidth: 1,
               circumference: 180,
               rotation: 270,
             },
@@ -131,8 +134,12 @@
         },
         options: {
           aspectRatio: 2,
-          legend: {
-            display: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: "white",
+              },
+            },
           },
         },
       });
@@ -149,8 +156,8 @@
                 "rgba(159, 190, 253, 1)",
                 "rgba(255, 255, 255, 1)",
               ],
-              borderColor: ["rgba(255, 255, 255 ,1)"],
-              borderWidth: 5,
+              borderColor: ["rgba(255, 255, 255 ,0.2)"],
+              borderWidth: 1,
               circumference: 180,
               rotation: 270,
             },
@@ -161,6 +168,9 @@
           plugins: {
             legend: {
               display: false,
+              labels: {
+                color: "white",
+              },
             },
             tooltip: {
               filter: (tooltipItem) => {
@@ -193,26 +203,30 @@
             {
               label: "AC Output",
               data: [0, 0, 0, 0],
-              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+              backgroundColor: ["rgba(255, 99, 132, 0.8)"],
               borderColor: ["rgba(255, 99, 132, 1)"],
               borderWidth: 1,
-              fill: true,
+              fill: false,
+              pointStyle: false,
             },
             {
               label: "AC Input",
               data: [0, 0, 0, 0],
-              backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+              backgroundColor: ["rgba(54, 162, 235, 0.8)"],
               borderColor: ["rgba(54, 162, 235, 1)"],
               borderWidth: 1,
-              fill: true,
+              fill: false,
+              pointStyle: false,
             },
             {
               label: "DC Input",
               data: [0, 0, 0, 0],
-              backgroundColor: ["rgba(75, 192, 192, 0.2)"],
+              backgroundColor: ["rgba(75, 192, 192, 0.8)"],
               borderColor: ["rgba(75, 192, 192, 1)"],
               borderWidth: 1,
-              fill: true,
+              fill: false,
+              pointStyle: false,
+              color: "white",
             },
           ],
         },
@@ -226,6 +240,10 @@
               title: {
                 display: true,
                 text: "Time",
+                color: "white",
+              },
+              ticks: {
+                color: "white",
               },
             },
             y: {
@@ -233,6 +251,10 @@
               title: {
                 display: true,
                 text: "Power (W)",
+                color: "white",
+              },
+              ticks: {
+                color: "white",
               },
             },
           },
@@ -240,11 +262,17 @@
             title: {
               display: true,
               text: "Overall View",
+              color: "white",
+            },
+            legend: {
+              labels: {
+                color: "white",
+              },
             },
             subtitle: {
               display: true,
               text: "Click and drag to zoom | ctrl+drag to pan",
-              color: "gray",
+              color: "white",
               font: {
                 size: 12,
                 family: "arial, sans-serif",
@@ -291,7 +319,7 @@
             {
               label: "Battery",
               data: [0, 0, 0, 0],
-              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+              backgroundColor: ["rgba(255, 99, 132, 0.8)"],
               borderColor: ["rgba(255, 99, 132, 1)"],
               borderWidth: 1,
               fill: true,
@@ -299,7 +327,7 @@
             {
               label: 'Battery Voltage',
               data: [0, 0, 0, 0],
-              backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+              backgroundColor: ["rgba(54, 162, 235, 0.8)"],
               borderColor: ["rgba(54, 162, 235, 1)"],
               borderWidth: 1,
               fill: true,
@@ -317,26 +345,40 @@
               title: {
                 display: true,
                 text: "Time",
+                color: 'white',
               },
               stacked: true,
+              ticks: {
+                color: 'white',
+              }
             },
             y: {
               beginAtZero: true,
               title: {
                 display: true,
                 text: "Battery (SoC %)",
+                color: 'white',
               },
+              ticks: {
+                color: 'white',
+              }
             },
           },
           plugins: {
             title: {
               display: true,
               text: "Battery View",
+              color: 'white',
+            },
+            legend: {
+              labels: {
+                color: 'white',
+              }
             },
             subtitle: {
               display: true,
               text: "Click and drag to zoom | ctrl+drag to pan",
-              color: "gray",
+              color: "white",
               font: {
                 size: 12,
                 family: "arial, sans-serif",
