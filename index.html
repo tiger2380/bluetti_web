@@ -34,10 +34,10 @@
   </head>
   <body>
     <div id="app">
-      <button id="btn">Connect</button>
-      <pre>
+      <button id="btn">Connect to Device</button>
+      <pre style="display: none;">
         <div id="details"></div>
-        </pre>
+      </pre>
       <div id="chart">
         <h2 style="color: white">Charts</h2>
         <div
@@ -57,6 +57,8 @@
         <button onClick="myChart.resetZoom()">Reset Zoom</button>
         <canvas id="myChart"></canvas>
         <hr/>
+        
+        <button onClick="batteryLineChart.resetZoom()">Reset Zoom</button>
         <canvas id="batteryLineChart"></canvas>
       </div>
       <!--<p>AC OUTPUT: <span id="ac_output"></span></p>
