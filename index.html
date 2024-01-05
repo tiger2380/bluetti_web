@@ -284,7 +284,7 @@
       );
 
       const batteryLineChart = new Chart(batteryLineCtx, {
-        type: "line",
+        type: "bar",
         data: {
           labels: [],
           datasets: [
@@ -296,6 +296,14 @@
               borderWidth: 1,
               fill: true,
             },
+            {
+              label: 'Battery Voltage',
+              data: [0, 0, 0, 0],
+              backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+              borderColor: ["rgba(54, 162, 235, 1)"],
+              borderWidth: 1,
+              fill: true,
+            }
           ],
         },
         options: {
@@ -303,12 +311,14 @@
             intersect: false,
             mode: "index",
           },
+          responsive: true,
           scales: {
             x: {
               title: {
                 display: true,
                 text: "Time",
               },
+              stacked: true,
             },
             y: {
               beginAtZero: true,
@@ -412,6 +422,7 @@
 
         batteryLineChart.data.labels.push(formatAMPM(time));
         batteryLineChart.data.datasets[0].data.push(data.battery);
+        batteryLineChart.data.datasets[1].data.push(data.internal_pack_voltage);
         batteryLineChart.update();
       });
     </script>

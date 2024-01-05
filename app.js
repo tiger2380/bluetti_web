@@ -249,15 +249,24 @@ button.addEventListener("click", async () => {
     if (bluetoothDevice.name.includes('AC200')) {
       const script = document.createElement('script');
       script.src = `devices/AC200.js`;
+      script.defer = true;
       document.head.appendChild(script);
     } else if (bluetoothDevice.name.includes('AC300')) {
       const script = document.createElement('script');
       script.src = `devices/AC300.js`;
+      script.defer = true;
       document.head.appendChild(script);
+    } else if(bluetoothDevice.name.includes('AC500')) {
+      const script = document.createElement('script');
+      script.src = `devices/AC500.js`;
+      script.defer = true;
+      document.head.appendChild(script);
+    } else {
+      log('> Unknown device: ' + bluetoothDevice.name);
     }
 
     log(`> Device: ${bluetoothDevice.name}`);
-
+    await sleep(2000);
     connect();
   } catch (error) {
     console.error("Something went wrong", error);
