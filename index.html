@@ -508,7 +508,7 @@
         batteryLineChart.update();
 
         // attempt to calculate battery remaning time
-        const batteryCapacity = 48 * 50; //48v, 50Ah
+        const batteryCapacity = 51.2 * 60; // 51.2v, 60Ah = 3072wh
         const batteryEfficiency = 0.95; // 95% battery capacity(guessing)
         const outputLoad = data.ac_output_power || 1; // output load
         const inputLoad = (data.ac_input_power || 0) + (data.dc_input_power || 0); // input load (PV, Grid)
