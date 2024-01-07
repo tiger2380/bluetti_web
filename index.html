@@ -513,7 +513,8 @@
         const outputLoad = data.ac_output_power || 1; // output load
         const inputLoad = (data.ac_input_power || 0) + (data.dc_input_power || 0); // input load (PV, Grid)
         const inverterEfficiency = 0.90; // 90% inverter efficiency
-        const timeRemaining = (batteryCapacity * batteryEfficiency *  inverterEfficiency) / Math.abs(outputLoad - inputLoad); // hours
+        const totalBatteryPercentage = data.battery;
+        const timeRemaining = (batteryCapacity * batteryEfficiency *  inverterEfficiency * (totalBatteryPercentage/100)) / Math.abs(outputLoad - inputLoad); // hours
 
         const text2 = `~ ${timeRemaining.toFixed(2)} hours remaining. `;
         document.getElementById("remainingTime").innerHTML = text2;
