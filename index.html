@@ -96,12 +96,12 @@
           </div>
         </div>
         <hr/>
-        <div style="width: 100%; position: relative;">
+        <div style="width: 100vw; height: 80vh; position: relative;">
 	        <button class="btn" style="position: absolute; left: 2rem; top: 30px;" onClick="myChart.resetZoom()">Reset Zoom</button>
 	        <canvas id="myChart"></canvas>
         </div>
         <hr/>
-        <div style="width: 100%; position: relative;">
+        <div style="width: 100vw; height: 80vh; position: relative;">
 	        <button class="btn" style="position: absolute; left: 2rem; top: 30px;" onClick="batteryLineChart.resetZoom()">Reset Zoom</button>
 	        <canvas id="batteryLineChart"></canvas>
         </div>
@@ -183,6 +183,7 @@
         },
         options: {
           aspectRatio: 2,
+          responsive: true,
           plugins: {
             legend: {
               labels: {
@@ -213,6 +214,7 @@
           ],
         },
         options: {
+          responsive: true,
           aspectRatio: 2,
           plugins: {
             legend: {
@@ -280,6 +282,8 @@
           ],
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           interaction: {
             intersect: false,
             mode: "index",
@@ -386,6 +390,7 @@
             mode: "index",
           },
           responsive: true,
+          maintainAspectRatio: false,
           scales: {
             x: {
               title: {
@@ -400,6 +405,7 @@
             },
             y: {
               beginAtZero: true,
+              stacked: true,
               title: {
                 display: true,
                 text: "Battery (SoC %)",
