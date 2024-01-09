@@ -7,4 +7,6 @@ const FIELD_TYPE = {
   uint32: "uint32",
   decimal: "decimal",
   bool: "bool",
+  array: "array",
+  enum: "enum",
 };

@@ -85,6 +85,29 @@ const parse_version_field = (value) => {
 };
 
 /**
+ * Parses a field value as an array of decimal values.
+ * 
+ * @param {any} value - The value to be parsed.
+ * @return {Array<number>} The parsed array of decimal values.
+ */
+const parse_decimal_array = (value) => {
+    let values = new Uint16Array(value);
+    return Array.from(values).map(v => v / Math.pow(10, this.scale));
+}
+
+/**
+ * Parses an enum field from a given value.
+ * 
+ * @param {any} value - The value to be parsed.
+ * @param {object} enumObject - The enum object to parse from.
+ * @return {number} The parsed enum value.
+ */
+const parse_enum_field = (value, enumObject) => {
+	let value = new Uint8Array(value);
+	return enumObject[value[0]];
+}
+
+/**
  * Parses a field value based on its type and scale.
  *
  * @param {any} value - The value to be parsed.
@@ -109,6 +132,10 @@ const parse_field = (value, type, scale) => {
         return parse_serial_number_field(value);
       case FIELD_TYPE.version:
         return parse_version_field(value);
+	  case FIELD_TYPE.array:
+		return parse_decimal_array(value);
+	  case FIELD_TYPE.enum:
+		return parse_enum_field(value);
       default:
         throw new Error(`Unknown field type ${type}`);
     }

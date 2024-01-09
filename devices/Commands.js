@@ -12,14 +12,15 @@ var targetProxy = new Proxy(parsed, {
 
 
 class ReadSingleRegisterCommand {
-  constructor(name, page, offset, length = "", unit, FIELD_TYPE, scale = 0) {
-    this.name = name;
-    this.page = page;
-    this.offset = offset;
-    this.length = length;
-    this.unit = unit;
-    this.FIELD_TYPE = FIELD_TYPE;
-    this.scale = scale;
+  constructor(params) {
+    this.name = params.name || "unknown";
+    this.page = params.page || 0x00;
+    this.offset = params.offset || 0x00;
+    this.length = params.length || 1;
+    this.unit = params.unit || "";
+    this.FIELD_TYPE = params.field_type	|| FIELD_TYPE.uint16;
+    this.scale = params.scale || 0;
+    this.enum = params.enum;
   }
 
   get resolver() {
