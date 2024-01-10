@@ -91,8 +91,9 @@ const parse_version_field = (value) => {
  * @return {Array<number>} The parsed array of decimal values.
  */
 const parse_decimal_array = (value) => {
-    let values = new Uint16Array(value);
-    return Array.from(values).map(v => v / Math.pow(10, this.scale));
+    debugger;
+    let values = dataViewToArray(value);
+    return values.map(v => v / Math.pow(10, 2));
 }
 
 /**
@@ -103,8 +104,7 @@ const parse_decimal_array = (value) => {
  * @return {number} The parsed enum value.
  */
 const parse_enum_field = (value, enumObject) => {
-  debugger;
-  value = value.getInt8(1);
+  value = value.getInt16(0, false);
 	return enumObject[value];
 }
 

@@ -62,3 +62,17 @@ function crc16HexString(data) {
 const sleep = async (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+/**
+ * Converts a DataView to an array.
+ * 
+ * @param {DataView} dataView - The DataView to be converted.
+ * @return {Array<number>} The converted array.
+ */
+function dataViewToArray(dataView) {
+    let array = [];
+    for(let i = 0; i < dataView.byteLength; i++) {
+        array.push(dataView.getUint8(i));
+    }
+    return array;
+}

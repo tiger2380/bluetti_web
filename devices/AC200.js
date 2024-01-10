@@ -157,6 +157,7 @@ const fields = [
     length: 1,
     unit: "hz",
     field_type: FIELD_TYPE.decimal,
+    scale: 2,
   }),
   new ReadSingleRegisterCommand({
     name: "total_battery_percent",

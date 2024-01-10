@@ -16,7 +16,7 @@ class ReadSingleRegisterCommand {
     this.name = params.name || "unknown";
     this.page = params.page || 0x00;
     this.offset = params.offset || 0x00;
-    this.length = params.length || 1;
+    this.length = params.length || 0x1;
     this.unit = params.unit || "";
     this.FIELD_TYPE = params.field_type	|| FIELD_TYPE.uint16;
     this.scale = params.scale || 0;
@@ -71,7 +71,7 @@ class ReadSingleRegisterCommand {
        * @type {any}
        */
       this.value = parse_field(dataview, this.FIELD_TYPE, this.scale, this.enum);
-
+      console.log(this.name);
       targetProxy[this.name] = this.value; // + this.unit;
       parsed[this.name] = this.value; // + this.unit;
       resolve(parsed[this.name]);
