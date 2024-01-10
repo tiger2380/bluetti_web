@@ -103,8 +103,9 @@ const parse_decimal_array = (value) => {
  * @return {number} The parsed enum value.
  */
 const parse_enum_field = (value, enumObject) => {
-	let value = new Uint8Array(value);
-	return enumObject[value[0]];
+  debugger;
+  value = value.getInt8(1);
+	return enumObject[value];
 }
 
 /**
@@ -115,7 +116,7 @@ const parse_enum_field = (value, enumObject) => {
  * @param {number} scale - The scale of the field.
  * @return {any} - The parsed field value.
  */
-const parse_field = (value, type, scale) => {
+const parse_field = (value, type, scale, enumObject) => {
   try {
     switch (type) {
       case FIELD_TYPE.uint8:
@@ -132,10 +133,10 @@ const parse_field = (value, type, scale) => {
         return parse_serial_number_field(value);
       case FIELD_TYPE.version:
         return parse_version_field(value);
-	  case FIELD_TYPE.array:
-		return parse_decimal_array(value);
-	  case FIELD_TYPE.enum:
-		return parse_enum_field(value);
+      case FIELD_TYPE.array:
+        return parse_decimal_array(value);
+      case FIELD_TYPE.enum:
+        return parse_enum_field(value, enumObject);
       default:
         throw new Error(`Unknown field type ${type}`);
     }

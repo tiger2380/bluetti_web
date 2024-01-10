@@ -1,34 +1,34 @@
 const OutputMode = Object.freeze({
-    0: STOP,
-    1: INVERTER_OUTPUT,
-    2: BYPASS_OUTPUT_C,
-    3: BYPASS_OUTPUT_D,
-    4: LOAD_MATCHING,
+    0: 'STOP',
+    1: 'INVERTER_OUTPUT',
+    2: 'BYPASS_OUTPUT_C',
+    3: 'BYPASS_OUTPUT_D',
+    4: 'LOAD_MATCHING',
 });
 
-const BatteryState = Object.feeze({
-    0: STANDBY,
-    1: CHARGE,
-    2: DISCHARGE,
+const BatteryState = Object.freeze({
+    0: 'STANDBY',
+    1: 'CHARGE',
+    2: 'DISCHARGE',
 });
 
 const UpsMode = Object.freeze({
-    0: CUSTOMIZED,
-    1: EPV_PRIORITY,
-    2: STANDARD,
-    3: TIME_CONTROL,
+    0: 'CUSTOMIZED',
+    1: 'EPV_PRIORITY',
+    2: 'STANDARD',
+    3: 'TIME_CONTROL',
 });
 
 const MachineAddress = Object.freeze({
-	0: SLAVE,
-	1: MASTER,
+	0: 'SLAVE',
+	1: 'MASTER',
 });
 
 const AutoSleepMode = Object.freeze({
-	2: THIRTY_SECONDS,
-	3: ONE_MINUTE,
-	4: FIVE_MINUTES,
-	5: NEVER,
+	2: 'THIRTY_SECONDS',
+	3: 'ONE_MINUTE',
+	4: 'FIVE_MINUTES',
+	5: 'NEVER',
 });
 
 const fields = [
@@ -312,7 +312,7 @@ const fields = [
 	  page: 0x00,
 	  offset: 0xbbd,
 	  field_type: FIELD_TYPE.enum,
-	  enum: SplitPhaseMachineMode,
+	  enum: MachineAddress,
   }),
   new ReadSingleRegisterCommand({
 	  name: "pack_num",

@@ -70,7 +70,7 @@ class ReadSingleRegisterCommand {
        * Parse the field from the data view.
        * @type {any}
        */
-      this.value = parse_field(dataview, this.FIELD_TYPE, this.scale);
+      this.value = parse_field(dataview, this.FIELD_TYPE, this.scale, this.enum);
 
       targetProxy[this.name] = this.value; // + this.unit;
       parsed[this.name] = this.value; // + this.unit;
