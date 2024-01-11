@@ -23,7 +23,7 @@
       
 	  .btn {
 		padding: 10px;
-		font-size: 18px;
+		font-size: 14px;
 		border-radius: 5px;
 		border: none;
 		cursor: pointer;
@@ -67,12 +67,24 @@
         left: 50%;
         transform: translateX(-50%);
       }
+      #showDetails {
+        display: none;
+      }
+      #showDetails + pre {
+        display: none;
+      }
+      #showDetails:checked + pre {
+        display: block;
+      }
     </style>
   </head>
   <body>
     <div id="app">
       <button id="btn" class="btn">Connect to Device</button>
-      <pre style="display: block;">
+      <hr/>
+      <h2 style="color: white; margin-bottom: 2rem;">Details <label class="btn" style="font-size: 0.8rem; font-weight: lighter;" for="showDetails">Hide/Show Details</button></h2>
+      <input type="checkbox" id="showDetails" checked/>
+      <pre>
         <div id="details"></div>
       </pre>
       <div id="chart">
