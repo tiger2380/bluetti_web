@@ -45,7 +45,7 @@ const fields = [
 	  offset: 0x26,
     unit: "w",
     field_type: FIELD_TYPE.uint16,
-    validRange: [0, 245]
+    validRange: [0, 6000]
   }),
   new ReadSingleRegisterCommand({
     name: "ac_input_power",
