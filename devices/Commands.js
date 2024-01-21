@@ -1,7 +1,7 @@
 const parsed = {};
 var targetProxy = new Proxy(parsed, {
   set: function (target, key, value) {
-    if (typeof value === 'string' && "undefined" != value.substring(0, 9)) {
+    if (typeof value === "string" && "undefined" != value.substring(0, 9)) {
       target[key] = value;
 
       window.eventEmitter.emit("update", target);
@@ -10,7 +10,6 @@ var targetProxy = new Proxy(parsed, {
   },
 });
 
-
 class ReadSingleRegisterCommand {
   constructor(params) {
     this.name = params.name || "unknown";
@@ -18,9 +17,10 @@ class ReadSingleRegisterCommand {
     this.offset = params.offset || 0x00;
     this.length = params.length || 0x1;
     this.unit = params.unit || "";
-    this.FIELD_TYPE = params.field_type	|| FIELD_TYPE.uint16;
+    this.FIELD_TYPE = params.field_type || FIELD_TYPE.uint16;
     this.scale = params.scale || 0;
     this.enum = params.enum;
+    this.validRange = params.validRange ?? null;
   }
 
   get resolver() {
@@ -70,8 +70,31 @@ class ReadSingleRegisterCommand {
        * Parse the field from the data view.
        * @type {any}
        */
-      this.value = parse_field(dataview, this.FIELD_TYPE, this.scale, this.enum);
-      console.log(this.name);
+      this.value = parse_field(
+        dataview,
+        this.FIELD_TYPE,
+        this.scale,
+        this.enum
+      );
+      
+      /**
+       * Check if the value is within the valid range.
+       * @type {any}
+       * @todo Move this to a separate function.
+       */
+      if (this.validRange) {
+        const minRange = Math.min(...this.validRange);
+        const maxRange = Math.max(...this.validRange);
+        if (
+          this.value < minRange ||
+          this.value > maxRange
+        ) {
+          reject(
+            `Invalid value. Expected ${minRange} <= ${this.name} <= ${maxRange}, got ${this.value}`
+          );
+        }
+      }
+      
       targetProxy[this.name] = this.value; // + this.unit;
       parsed[this.name] = this.value; // + this.unit;
       resolve(parsed[this.name]);
@@ -212,8 +235,6 @@ class WriteSingleRegisterCommand {
       .toString(16)
       .padStart(4, "0")}, offset=${this.offset
       .toString(16)
-      .padStart(4, "0")}, value=${this.value
-      .toString(16)
-      .padStart(4, "0")})`;
+      .padStart(4, "0")}, value=${this.value.toString(16).padStart(4, "0")})`;
   }
 }

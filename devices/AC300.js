@@ -42,30 +42,34 @@ const fields = [
   new ReadSingleRegisterCommand({
     name: "ac_output_power",
     page: 0x00,
-	offset: 0x26,
+	  offset: 0x26,
     unit: "w",
-    field_type: FIELD_TYPE.uint16
+    field_type: FIELD_TYPE.uint16,
+    validRange: [0, 245]
   }),
   new ReadSingleRegisterCommand({
     name: "ac_input_power",
     page: 0x00,
     offset: 0x25,
     unit: "w",
-    field_type: FIELD_TYPE.uint16
+    field_type: FIELD_TYPE.uint16,
+    validRange: [0, 245]
   }),
   new ReadSingleRegisterCommand({
     name: "dc_input_power",
     page: 0x00,
     offset: 0x24,
     unit: "w",
-    field_type: FIELD_TYPE.uint16
+    field_type: FIELD_TYPE.uint16,
+    validRange: [0, 3200]
   }),
   new ReadSingleRegisterCommand({
     name: "dc_output_power",
     page: 0x00,
     offset: 0x27,
     unit: "w",
-    field_type: FIELD_TYPE.uint16
+    field_type: FIELD_TYPE.uint16,
+    validRange: [0, 60]
   }),
   new ReadSingleRegisterCommand({
     name: "battery",
@@ -99,7 +103,7 @@ const fields = [
     page: 0x00,
     offset: 0x46,
     field_type: FIELD_TYPE.enum,
-	enum: OutputMode
+	  enum: OutputMode
   }),
   new ReadSingleRegisterCommand({
     name: "ac_output_voltage",
@@ -201,7 +205,7 @@ const fields = [
   }),
   new ReadSingleRegisterCommand({
     name: "internal_dc_input_voltage",
-	page: 0x00,
+	  page: 0x00,
     offset: 0x56,
     unit: "v",
     field_type: FIELD_TYPE.decimal
