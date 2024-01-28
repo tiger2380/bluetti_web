@@ -9,7 +9,7 @@ A simple Javascript-based site that connects to a Bluetti device and extracts da
 
 1. Download or clone this repository
 2. Extract/open that repo that you just downloaded/cloned.
-3. Make sure that Docker is installed. If it isn't, you can download it here. https://www.docker.com/products/docker-desktop/
+3. Make sure that **Docker** is installed. If it isn't, you can download it here. https://www.docker.com/products/docker-desktop/
 4. Navigate to the root directory and run ```docker-compose up --build``` from the termial. If this is your first time, it might takes longer than ususal.
 5. After ```docker-compose up --build``` is finish, you can open your favorite browser(I recommend Chrome) and goto http://localhost/dashboard
 
