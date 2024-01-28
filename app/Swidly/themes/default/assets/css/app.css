@@ -147,3 +147,8 @@ b {
   justify-content: center;
   gap: 0.4rem;
 }
+hr {
+  border: 0.5px solid var(--color-dark);
+  height: 1px;
+  margin: 5rem 0;
+}

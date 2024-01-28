@@ -4,6 +4,83 @@ const powerCtx = document.getElementById("powerChart");
 const batteryLineCtx = document.getElementById("batteryLineChart");
 const batteryContext = batteryCtx.getContext("2d");
 
+const LIGHTTHEME = {
+    backgroundColor: "rgba(255, 99, 132, 0.2)",
+    borderColor: "rgba(255, 99, 132, 1)",
+    pointBackgroundColor: "rgba(255, 99, 132, 1)",
+    pointBorderColor: "#000",
+    pointHoverBackgroundColor: "#fff",
+    pointHoverBorderColor: "rgba(255, 99, 132, 1)",
+};
+const DARKTHEME = {
+    backgroundColor: "rgba(54, 162, 235, 0.2)",
+    borderColor: "rgba(54, 162, 235, 1)",
+    pointBackgroundColor: "rgba(54, 162, 235, 1)",
+    pointBorderColor: "#fff",
+    pointHoverBackgroundColor: "#fff",
+    pointHoverBorderColor: "rgba(54, 162, 235, 1)",
+};
+
+window.eventEmitter.on("theme", (data) => {
+    if (data.theme === "dark") {
+        powerChart.options.plugins.legend.labels.color = DARKTHEME.pointBorderColor;
+        chart.options.plugins.legend.labels.color = DARKTHEME.pointBorderColor;
+        myChart.options.scales.x.title.color = DARKTHEME.pointBorderColor;
+        myChart.options.scales.x.ticks.color = DARKTHEME.pointBorderColor;
+        myChart.options.scales.y.title.color = DARKTHEME.pointBorderColor;
+        myChart.options.scales.y.ticks.color = DARKTHEME.pointBorderColor;
+        myChart.options.plugins.title.color = DARKTHEME.pointBorderColor;
+        myChart.options.plugins.legend.labels.color = DARKTHEME.pointBorderColor;
+        myChart.options.plugins.subtitle.color = DARKTHEME.pointBorderColor;
+
+        batteryLineChart.options.scales.x.title.color = DARKTHEME.pointBorderColor;
+        batteryLineChart.options.scales.x.ticks.color = DARKTHEME.pointBorderColor;
+        batteryLineChart.options.scales.y.title.color = DARKTHEME.pointBorderColor;
+        batteryLineChart.options.scales.y.ticks.color = DARKTHEME.pointBorderColor;
+        batteryLineChart.options.plugins.title.color = DARKTHEME.pointBorderColor;
+        batteryLineChart.options.plugins.legend.labels.color =
+          DARKTHEME.pointBorderColor;
+        batteryLineChart.options.plugins.subtitle.color = DARKTHEME.pointBorderColor;
+
+        chart.update();
+        powerChart.update();
+        myChart.update();
+        batteryLineChart.update();
+    } else {
+        powerChart.options.plugins.legend.labels.color =
+            LIGHTTHEME.pointBorderColor;
+        chart.options.plugins.legend.labels.color = LIGHTTHEME.pointBorderColor;
+        myChart.options.scales.x.title.color = LIGHTTHEME.pointBorderColor;
+        myChart.options.scales.x.ticks.color = LIGHTTHEME.pointBorderColor;
+        myChart.options.scales.y.title.color = LIGHTTHEME.pointBorderColor;
+        myChart.options.scales.y.ticks.color = LIGHTTHEME.pointBorderColor;
+        myChart.options.plugins.title.color = LIGHTTHEME.pointBorderColor;
+        myChart.options.plugins.legend.labels.color =
+          LIGHTTHEME.pointBorderColor;
+        myChart.options.plugins.subtitle.color = LIGHTTHEME.pointBorderColor;
+
+        batteryLineChart.options.scales.x.title.color =
+          LIGHTTHEME.pointBorderColor;
+        batteryLineChart.options.scales.x.ticks.color =
+          LIGHTTHEME.pointBorderColor;
+        batteryLineChart.options.scales.y.title.color =
+          LIGHTTHEME.pointBorderColor;
+        batteryLineChart.options.scales.y.ticks.color =
+          LIGHTTHEME.pointBorderColor;
+        batteryLineChart.options.plugins.title.color =
+          LIGHTTHEME.pointBorderColor;
+        batteryLineChart.options.plugins.legend.labels.color =
+          LIGHTTHEME.pointBorderColor;
+        batteryLineChart.options.plugins.subtitle.color =
+          LIGHTTHEME.pointBorderColor;
+        
+        myChart.update();
+        batteryLineChart.update();
+        chart.update();
+        powerChart.update();
+    }
+});
+
 const batteryPlugin = {
   id: "batteryPlugin",
   afterDraw: (chart) => {
@@ -14,7 +91,7 @@ const batteryPlugin = {
       chartArea: { top, bottom, left, right, height, width },
     } = chart;
     ctx.save();
-    ctx.fillStyle = "rgba(255, 255, 255, 0)";
+    ctx.fillStyle = "rgba(199, 122, 188, 0)";
     ctx.fillRect(left, top, width, height);
 
     const fontSize = (height / 114).toFixed(2);
@@ -25,7 +102,7 @@ const batteryPlugin = {
       textX = Math.round((width - ctx.measureText(text).width) / 2),
       textY = height - 50;
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.fillStyle = "rgba(199, 122, 188, 0.8)";
     ctx.fillText(text, textX, textY);
     ctx.restore();
   },

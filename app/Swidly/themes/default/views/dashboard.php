@@ -99,6 +99,7 @@
                     <canvas id="batteryLineChart"></canvas>
                 </div>
             </section>
+            <hr />
             <section>
                 <h2 style="color: white; margin-bottom: 2rem;">Details <label class="btn" style="font-size: 0.8rem; font-weight: lighter;" for="showDetails">Hide/Show Details</button></h2>
                 <input type="checkbox" id="showDetails" checked/>
@@ -110,13 +111,13 @@
     </main>
     <article>
         <div class="user-notifications">
-            <div class="notifications">
-                <div class="icon">
-                    <span class="material-symbols-sharp">
-                        notifications
-                    </span>
-                    <small class="badge">5</small>
-                </div>
+            <div class="dark-mode">
+                <span class="material-symbols-sharp active">
+                    light_mode
+                </span>
+                <span class="material-symbols-sharp">
+                    dark_mode
+                </span>
             </div>
             <button id="conntectBluetooth" class="btn">
                 <span class="material-symbols-sharp">
@@ -126,9 +127,9 @@
             </button>
         </div>
         <div class="side-charts">
-            <div style="flex: 1; position: relative;">
+            <div style="flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                 <canvas id="batteryChart" style="flex: 1"></canvas>
-                <p id="remainingTime"></p>
+                <p id="remainingTime">⏳ hours remaining.</p>
             </div>
             <div style="flex: 1;">
                 <canvas id="powerChart" style="flex: 1"></canvas>
