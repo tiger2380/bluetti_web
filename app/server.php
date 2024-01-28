@@ -1,13 +1,13 @@
 <?php
-
+session_start();
 $input = file_get_contents('php://input');
 $decoded = json_decode($input, true);
 
 // connect to pdo database
-$pdo = new PDO('mysql:host=localhost;dbname=bluetti', 'bluetti', 'bluetti123');
+$pdo = new PDO('mysql:host=localhost;dbname=bluetti', 'bluetti', 'bluetti');
 
 // insert into database
-$statement = $pdo->prepare("INSERT INTO `log` (`ac_input_power`, `ac_output_power`, `dc_input_power`, `battery`, `created_at`) VALUES (:ac_input_power, :ac_output_power, :dc_input_power, :battery, :time)");
+$statement = $pdo->prepare("INSERT INTO `monitoring` (`ac_input_power`, `ac_output_power`, `dc_input_power`, `battery`, `created_at`) VALUES (:ac_input_power, :ac_output_power, :dc_input_power, :battery, :time)");
 $statement->execute(array(
     "ac_input_power" => $decoded['ac_input'],
     "ac_output_power" => $decoded['ac_output'],

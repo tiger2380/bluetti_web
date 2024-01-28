@@ -1,5 +1,9 @@
 'use strict';
 
+var Scrollbar = window.Scrollbar;
+
+Scrollbar.init(document.querySelector(".scrollable"));
+
 /**
  * Listen for incoming changes from Bluetti device.
  * This is where you can update the UI or save data to the database.
@@ -10,7 +14,8 @@ window.eventEmitter.on("update", (data) => {
   document.querySelector("#details").innerHTML = syntaxHighlight(data);
 });
 
-const button = document.querySelector("button");
+const button = document.querySelector("#conntectBluetooth");
+let isConnected = false;
 const SERVICEUUID = "0000ff00-0000-1000-8000-00805f9b34fb";
 const NOTIFYCHARACTERISTICUUID = "0000ff01-0000-1000-8000-00805f9b34fb";
 const WRITECHARACTERISTICUUID = "0000ff02-0000-1000-8000-00805f9b34fb";
@@ -109,6 +114,10 @@ const exponentialBackoff = (max, delay, toTry, success, fail) => {
     });
 };
 
+(() => {
+
+})();
+
 /**
  * Connects to a Bluetooth device using exponential backoff for retries.
  *
@@ -125,6 +134,7 @@ function connect() {
     function toTry() {
       time("Connecting to Bluetooth Device... ");
       if (bluetoothDevice.gatt.connected) {
+        isConnected = true;
         return bluetoothDevice.gatt;
       }
       return bluetoothDevice.gatt.connect();
@@ -132,6 +142,7 @@ function connect() {
     async function success(server) {
       log("> Bluetooth Device connected. Try disconnect it now.");
       log(`> Server connected: ${server}`);
+      isConnected = true;
       const service = await server
         .getPrimaryService(SERVICEUUID)
         .catch((error) => {
@@ -241,6 +252,26 @@ const onDisconnected = async (event) => {
 };
 
 button.addEventListener("click", async () => {
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+
+    const response = await fetch(
+      `https://api.weather.gov/points/${lat},${long}`
+    );
+    const json = await response.json();
+    const properties = json.properties;
+    const forecast = properties.forecast;
+    const forecastResponse = await fetch(forecast);
+    const forecastJson = await forecastResponse.json();
+    const data = forecastJson.properties.periods[0];
+    document.querySelector("#weatherCondition").innerHTML = data.shortForecast;
+    
+
+    latText.innerText = lat.toFixed(2);
+    longText.innerText = long.toFixed(2);
+  });
+
   try {
     bluetoothDevice = await navigator.bluetooth.requestDevice(options);
     console.log("Device discovered", bluetoothDevice);
@@ -248,17 +279,17 @@ button.addEventListener("click", async () => {
 
     if (bluetoothDevice.name.includes('AC200')) {
       const script = document.createElement('script');
-      script.src = `devices/AC200.js`;
+      script.src = `Swidly/themes/default/assets/js/devices/AC200.js`;
       script.defer = true;
       document.head.appendChild(script);
     } else if (bluetoothDevice.name.includes('AC300')) {
       const script = document.createElement('script');
-      script.src = `devices/AC300.js`;
+      script.src = `Swidly/themes/default/assets/js/devices/AC300.js`;
       script.defer = true;
       document.head.appendChild(script);
     } else if(bluetoothDevice.name.includes('AC500')) {
       const script = document.createElement('script');
-      script.src = `devices/AC500.js`;
+      script.src = `Swidly/themes/default/assets/js/devices/AC500.js`;
       script.defer = true;
       document.head.appendChild(script);
     } else {
