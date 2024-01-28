@@ -266,10 +266,6 @@ button.addEventListener("click", async () => {
     const forecastJson = await forecastResponse.json();
     const data = forecastJson.properties.periods[0];
     document.querySelector("#weatherCondition").innerHTML = data.shortForecast;
-    
-
-    latText.innerText = lat.toFixed(2);
-    longText.innerText = long.toFixed(2);
   });
 
   try {
