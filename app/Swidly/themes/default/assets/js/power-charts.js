@@ -1,8 +1,5 @@
 const ctx = document.getElementById("myChart");
-const batteryCtx = document.getElementById("batteryChart");
-const powerCtx = document.getElementById("powerChart");
 const batteryLineCtx = document.getElementById("batteryLineChart");
-const batteryContext = batteryCtx.getContext("2d");
 
 const LIGHTTHEME = {
     backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -23,7 +20,6 @@ const DARKTHEME = {
 
 window.eventEmitter.on("theme", (data) => {
     if (data.theme === "dark") {
-        powerChart.options.plugins.legend.labels.color = DARKTHEME.pointBorderColor;
         chart.options.plugins.legend.labels.color = DARKTHEME.pointBorderColor;
         myChart.options.scales.x.title.color = DARKTHEME.pointBorderColor;
         myChart.options.scales.x.ticks.color = DARKTHEME.pointBorderColor;
@@ -43,12 +39,9 @@ window.eventEmitter.on("theme", (data) => {
         batteryLineChart.options.plugins.subtitle.color = DARKTHEME.pointBorderColor;
 
         chart.update();
-        powerChart.update();
         myChart.update();
         batteryLineChart.update();
     } else {
-        powerChart.options.plugins.legend.labels.color =
-            LIGHTTHEME.pointBorderColor;
         chart.options.plugins.legend.labels.color = LIGHTTHEME.pointBorderColor;
         myChart.options.scales.x.title.color = LIGHTTHEME.pointBorderColor;
         myChart.options.scales.x.ticks.color = LIGHTTHEME.pointBorderColor;
@@ -77,7 +70,6 @@ window.eventEmitter.on("theme", (data) => {
         myChart.update();
         batteryLineChart.update();
         chart.update();
-        powerChart.update();
     }
 });
 
@@ -108,70 +100,6 @@ const batteryPlugin = {
   },
 };
 
-const powerChart = new Chart(powerCtx, {
-  type: "doughnut",
-  data: {
-    labels: ["DC Input", "Load"],
-    datasets: [
-      {
-        label: "Power",
-        data: [0, 0],
-        backgroundColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
-        borderColor: ["rgba(255, 255, 255 ,1)", "rgba(255, 255, 255 ,0.2)"],
-        borderWidth: 1,
-        circumference: 180,
-        rotation: 270,
-      },
-    ],
-  },
-  options: {
-    aspectRatio: 2,
-    responsive: true,
-    plugins: {
-      legend: {
-        labels: {
-          color: "black",
-        },
-      },
-    },
-  },
-});
-
-const chart = new Chart(batteryCtx, {
-  type: "doughnut",
-  data: {
-    labels: ["battery"],
-    datasets: [
-      {
-        label: "Battery Percentage",
-        data: [0, 0],
-        backgroundColor: ["rgba(159, 190, 253, 1)", "rgba(255, 255, 255, 1)"],
-        borderColor: ["rgba(255, 255, 255 ,0.2)"],
-        borderWidth: 1,
-        circumference: 180,
-        rotation: 270,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    aspectRatio: 2,
-    plugins: {
-      legend: {
-        display: false,
-        labels: {
-          color: "black",
-        },
-      },
-      tooltip: {
-        filter: (tooltipItem) => {
-          return tooltipItem.dataIndex === 0;
-        },
-      },
-    },
-  },
-  plugins: [batteryPlugin],
-});
 
 function formatAMPM(date) {
   var hours = date.getHours();
@@ -439,14 +367,6 @@ window.eventEmitter.on("update", async (data) => {
 
   myChart.update();
 
-  chart.data.datasets[0].data[0] = data.battery;
-  chart.data.datasets[0].data[1] = 100 - data.battery;
-  chart.update();
-
-  powerChart.data.datasets[0].data[0] = data.dc_input_power;
-  powerChart.data.datasets[0].data[1] = data.ac_output_power;
-  powerChart.update();
-
   batteryLineChart.data.labels.push(formatAMPM(time));
   batteryLineChart.data.datasets[0].data.push(data.battery);
   batteryLineChart.data.datasets[1].data.push(data.internal_pack_voltage);
@@ -466,11 +386,31 @@ window.eventEmitter.on("update", async (data) => {
       (totalBatteryPercentage / 100)) /
     Math.abs(outputLoad - inputLoad); // hours
 
-  const text2 = `~ ${timeRemaining.toFixed(2)} hours remaining. `;
-    document.getElementById("remainingTime").innerHTML = text2;
+ // const text2 = `~ ${timeRemaining.toFixed(2)} hours remaining. `;
+  //  document.getElementById("remainingTime").innerHTML = text2;
     document.querySelector('#deviceName').innerHTML = data.device_type;
     document.querySelector('#batteryStatus').innerHTML = data.battery + '%';
-    document.querySelector('#pvInput').innerHTML = data.dc_input_power + 'w';
+  document.querySelector('#pvInput').innerHTML = data.dc_input_power + 'w';
+  document.querySelector('#loadGauge').setAttribute('value', data.ac_output_power);
+  document.getElementById("loadGaugeLabel").textContent = data.ac_output_power + 'w';
+  document
+    .querySelector("#solarGauge")
+    .setAttribute("value", data.dc_input_power);
+  document.querySelector("#solarGaugeLabel").textContent = data.dc_input_power + 'w';
+  document.querySelector('#gridGauge').setAttribute('value', data.ac_input_power);
+  document.querySelector('#gridGaugeLabel').textContent = data.ac_input_power + 'w';
+
+  const batteryLevel = ((data.dc_input_power + data.ac_input_power) - (data.ac_output_power + getPowerConsumption(data)));
+  document.querySelector('#batteryGauge').setAttribute('value', Math.floor(batteryLevel));
+  document.querySelector('#batteryGaugeLabel').textContent = Math.floor(batteryLevel) + 'w';
+
+  if (batteryLevel < 0) {
+    document
+      .querySelector("#batteryGauge")
+      .setAttribute("fill", "#ff6666");
+  } else {
+    document.querySelector('#batteryGauge').setAttribute('fill', '#12db00');
+  }
 
   /*const response = await fetch("/api/monitoring", {
     method: "POST",
@@ -483,3 +423,21 @@ window.eventEmitter.on("update", async (data) => {
   const json = await response.json();
   console.log(json);*/
 });
+
+function getPowerConsumption(data) {
+  const device = data.device_type;
+  const ac_state_bitwise = data.ac_output_state ? 1 : 0;
+  const dc_state_bitwise = data.dc_output_state ? 2 : 0;
+  const state = ac_state_bitwise & dc_state_bitwise;
+
+  switch (state) {
+    case 1: // ac only
+      return device === "AC300" ? 37.6 : 27.4;
+    case 2: // dc only
+      return device === "AC300" ? 20.1 : 15.6;
+    case 3: // both dc and ac is on
+      return device === "AC300" ? 45.3 : 31.1;
+    default:
+      return device === "AC300" ? 16.9 : 12.6;
+  }
+}

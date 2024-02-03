@@ -127,12 +127,29 @@
             </button>
         </div>
         <div class="side-charts">
-            <div style="flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <canvas id="batteryChart" style="flex: 1"></canvas>
-                <p id="remainingTime">⏳ hours remaining.</p>
+            <div style="flex: 1;">
+                <semi-gauge id="loadGauge" maxValue="5000" value="0">
+                    <span slot="label" id="loadGaugeLabel" class="label">0w</span>
+                    <p>Load</p>
+                </semi-gauge>
             </div>
             <div style="flex: 1;">
-                <canvas id="powerChart" style="flex: 1"></canvas>
+                <semi-gauge id="solarGauge" maxValue="3000" value="0" fill="#ffcc66">
+                    <span slot="label" id="solarGaugeLabel" class="label">0w</span>
+                    <p>Solar PV</p>
+                </semi-gauge>
+            </div>
+            <div style="flex: 1;">
+                <semi-gauge id="gridGauge" maxValue="5000" value="0" fill="#80bfff">
+                    <span slot="label" id="gridGaugeLabel" class="label">0w</span>
+                    <p>Grid</p>
+                </semi-gauge>
+            </div>
+            <div style="flex: 1;">
+                <semi-gauge id="batteryGauge" maxValue="5000" value="0" fill="#ff6666">
+                    <span slot="label" id="batteryGaugeLabel" class="label">0w</span>
+                    <p>Battery</p>
+                </semi-gauge>
             </div>
         </div>
     </article>
@@ -145,6 +162,7 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
 ></script>
+<?= Swidly\Core\Swidly::load_script_file('gauge', '/assets/js/components') ?>
 <?= Swidly\Core\Swidly::load_script_file('EventEmitter', '/assets/js') ?>
 <?= Swidly\Core\Swidly::load_script_file('utils', '/assets/js') ?>
 <?= Swidly\Core\Swidly::load_script_file('enums', '/assets/js') ?>

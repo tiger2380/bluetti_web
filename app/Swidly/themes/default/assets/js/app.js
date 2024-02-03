@@ -223,7 +223,7 @@ function connect() {
             mode: "no-cors",
             body: JSON.stringify(parsed),
           });*/
-          sleep(10000);
+          await sleep(1000);
           loggingCommand();
         } catch (error) {
           console.error("Error when sending command", error);
