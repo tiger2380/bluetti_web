@@ -12,18 +12,20 @@ template.innerHTML = `
             --fill: #ff0;
             --minValue: 0;
             --maxValue: 100;
-            width: 250px;
-            height: 125px;
+            width: 90%;
+            height: 0;
+            padding-bottom: calc(90% / 2);
             position: relative;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: flex-end;
+            aspect-ratio: 1/1;
 
             &:after{
                 content: '';
-                width: 250px;
-                height: 250px;
+                width: 100%;
+                aspect-ratio: 1/1;
                 border:50px solid;
                 border-color : rgba(0,0,0,0.15) rgba(0,0,0,0.15) var(--fill) var(--fill);
                 position: absolute;
@@ -32,7 +34,6 @@ template.innerHTML = `
                 top: 0;
                 box-sizing : border-box;
                 transform: rotate( calc( 1deg * ( -45 + ((var(--percentage) / var(--maxValue)) * 100) * 1.8 ) ) );
-                animation : fillAnimation 1s ease-in;
                 transition : transform 1s ease-in;
             }
 
@@ -49,6 +50,8 @@ template.innerHTML = `
                 justify-content: flex-end;
                 box-sizing : border-box;
                 flex-direction: column;
+                position: absolute;
+                inset: 100% 0;
             }
         }
     </style>

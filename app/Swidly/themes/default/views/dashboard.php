@@ -127,25 +127,25 @@
             </button>
         </div>
         <div class="side-charts">
-            <div style="flex: 1;">
+            <div style="flex: 1; width: 100%;">
                 <semi-gauge id="loadGauge" maxValue="5000" value="0">
                     <span slot="label" id="loadGaugeLabel" class="label">0w</span>
                     <p>Load</p>
                 </semi-gauge>
             </div>
-            <div style="flex: 1;">
+            <div style="flex: 1; width: 100%;">
                 <semi-gauge id="solarGauge" maxValue="3000" value="0" fill="#ffcc66">
                     <span slot="label" id="solarGaugeLabel" class="label">0w</span>
                     <p>Solar PV</p>
                 </semi-gauge>
             </div>
-            <div style="flex: 1;">
+            <div style="flex: 1; width: 100%;">
                 <semi-gauge id="gridGauge" maxValue="5000" value="0" fill="#80bfff">
                     <span slot="label" id="gridGaugeLabel" class="label">0w</span>
                     <p>Grid</p>
                 </semi-gauge>
             </div>
-            <div style="flex: 1;">
+            <div style="flex: 1; width: 100%;">
                 <semi-gauge id="batteryGauge" maxValue="5000" value="0" fill="#ff6666">
                     <span slot="label" id="batteryGaugeLabel" class="label">0w</span>
                     <p>Battery</p>

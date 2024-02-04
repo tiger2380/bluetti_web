@@ -380,16 +380,16 @@ window.eventEmitter.on("update", async (data) => {
     document.querySelector('#batteryGauge').setAttribute('fill', '#12db00');
   }
 
-  /*const response = await fetch("/api/monitoring", {
+  const response = await fetch("/api/monitoring", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify($data),
+    body: JSON.stringify(data),
   });
 
   const json = await response.json();
-  console.log(json);*/
+  console.log(json);
 });
 
 function getPowerConsumption(data) {
