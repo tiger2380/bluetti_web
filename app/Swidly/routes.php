@@ -27,12 +27,8 @@ $this->get('/sw_admin/themes', function($req, $res) {
 
 $this->post('/api/monitoring', function($req, $res) {
     $data = $req->getDecoded();
-
-    $body = [];
+    $data['ip'] = $_SERVER['REMOTE_ADDR'];
     $sql = "INSERT INTO `monitoring`(`data`, `timestamp`, `user_id`) VALUES (?, ?, ?)";
-    foreach ($data as $key => $value) {
-        $body[] = "JSON_OBJECT('$key', '$value')";
-    }
 
     $payload = [
         json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
