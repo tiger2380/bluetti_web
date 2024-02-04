@@ -20,7 +20,6 @@ const DARKTHEME = {
 
 window.eventEmitter.on("theme", (data) => {
     if (data.theme === "dark") {
-        chart.options.plugins.legend.labels.color = DARKTHEME.pointBorderColor;
         myChart.options.scales.x.title.color = DARKTHEME.pointBorderColor;
         myChart.options.scales.x.ticks.color = DARKTHEME.pointBorderColor;
         myChart.options.scales.y.title.color = DARKTHEME.pointBorderColor;
@@ -38,11 +37,9 @@ window.eventEmitter.on("theme", (data) => {
           DARKTHEME.pointBorderColor;
         batteryLineChart.options.plugins.subtitle.color = DARKTHEME.pointBorderColor;
 
-        chart.update();
         myChart.update();
         batteryLineChart.update();
     } else {
-        chart.options.plugins.legend.labels.color = LIGHTTHEME.pointBorderColor;
         myChart.options.scales.x.title.color = LIGHTTHEME.pointBorderColor;
         myChart.options.scales.x.ticks.color = LIGHTTHEME.pointBorderColor;
         myChart.options.scales.y.title.color = LIGHTTHEME.pointBorderColor;
@@ -69,37 +66,8 @@ window.eventEmitter.on("theme", (data) => {
         
         myChart.update();
         batteryLineChart.update();
-        chart.update();
     }
 });
-
-const batteryPlugin = {
-  id: "batteryPlugin",
-  afterDraw: (chart) => {
-    const {
-      ctx,
-      config,
-      data,
-      chartArea: { top, bottom, left, right, height, width },
-    } = chart;
-    ctx.save();
-    ctx.fillStyle = "rgba(199, 122, 188, 0)";
-    ctx.fillRect(left, top, width, height);
-
-    const fontSize = (height / 114).toFixed(2);
-    ctx.font = fontSize + "em sans-serif";
-    ctx.textBaseline = "middle";
-
-    const text = (chart.data.datasets[0].data[0] || 0) + "%",
-      textX = Math.round((width - ctx.measureText(text).width) / 2),
-      textY = height - 50;
-
-    ctx.fillStyle = "rgba(199, 122, 188, 0.8)";
-    ctx.fillText(text, textX, textY);
-    ctx.restore();
-  },
-};
-
 
 function formatAMPM(date) {
   var hours = date.getHours();
