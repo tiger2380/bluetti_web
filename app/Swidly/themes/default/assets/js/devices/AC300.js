@@ -223,6 +223,7 @@ const fields = [
     offset: 0x5c,
     unit: "v",
     field_type: FIELD_TYPE.decimal,
+    scale: 2,
   }),
   new ReadSingleRegisterCommand({
     name: "total_battery_current",
