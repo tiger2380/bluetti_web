@@ -21,7 +21,7 @@
                     </span>
                     Charts
                 </a>
-                <a href="/logout"> 
+                <a href="/logout">
                     <span class="material-symbols-sharp">
                         logout
                     </span>
@@ -57,9 +57,9 @@
                         <p>Battery Status</p>
                         <small class="value" id="batteryStatus"></small>
                     </div>
-                    <div class="icon">
-                        <span class="material-symbols-sharp">
-                            battery_4_bar
+                    <div class="icon battery">
+                        <span class=" material-symbols-sharp">
+                            battery_0_bar
                         </span>
                     </div>
                 </div>
@@ -90,19 +90,23 @@
         <div class="scrollable" style="height: calc(100vh - 155px);">
             <section style="margin-top: 1.4rem;">
                 <div style="width: 100%; height: 300px; position: relative;">
-                    <button class="btn" style="position: absolute; left: 2rem; top: 30px;" onClick="myChart.resetZoom()">Reset Zoom</button>
+                    <button class="btn" style="position: absolute; left: 2rem; top: 30px;"
+                        onClick="myChart.resetZoom()">Reset Zoom</button>
                     <canvas id="myChart"></canvas>
                 </div>
-                <hr/>
+                <hr />
                 <div style="width: 100%; height: 300px; position: relative;">
-                    <button class="btn" style="position: absolute; left: 2rem; top: 30px;" onClick="batteryLineChart.resetZoom()">Reset Zoom</button>
+                    <button class="btn" style="position: absolute; left: 2rem; top: 30px;"
+                        onClick="batteryLineChart.resetZoom()">Reset Zoom</button>
                     <canvas id="batteryLineChart"></canvas>
                 </div>
             </section>
             <hr />
             <section>
-                <h2 style="color: white; margin-bottom: 2rem;">Details <label class="btn" style="font-size: 0.8rem; font-weight: lighter;" for="showDetails">Hide/Show Details</button></h2>
-                <input type="checkbox" id="showDetails" checked/>
+                <h2 style="color: white; margin-bottom: 2rem;">Details <label class="btn"
+                        style="font-size: 0.8rem; font-weight: lighter;" for="showDetails">Hide/Show Details</button>
+                </h2>
+                <input type="checkbox" id="showDetails" checked />
                 <pre>
                     <div id="details"></div>
                 </pre>
@@ -156,12 +160,9 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-<script
-    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"
     integrity="sha512-wUYbRPLV5zs6IqvWd88HIqZU/b8TBx+I8LEioQ/UC0t5EMCLApqhIAnUg7EsAzdbhhdgW07TqYDdH3QEXRcPOQ=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-></script>
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <?= Swidly\Core\Swidly::load_script_file('gauge', '/assets/js/components') ?>
 <?= Swidly\Core\Swidly::load_script_file('EventEmitter', '/assets/js') ?>
 <?= Swidly\Core\Swidly::load_script_file('utils', '/assets/js') ?>

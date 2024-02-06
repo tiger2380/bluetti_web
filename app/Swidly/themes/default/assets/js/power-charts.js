@@ -372,6 +372,8 @@ window.eventEmitter.on("update", async (data) => {
   document.querySelector('#batteryGauge').setAttribute('value', Math.floor(batteryLevel));
   document.querySelector('#batteryGaugeLabel').textContent = Math.floor(batteryLevel) + 'w';
 
+  setBatteryIcon(data.battery);
+
   if (batteryLevel < 0) {
     document
       .querySelector("#batteryGauge")
@@ -391,6 +393,14 @@ window.eventEmitter.on("update", async (data) => {
   const json = await response.json();
   console.log(json);
 });
+
+function setBatteryIcon(battery) {
+  if (battery >= 80 || battery <= 100) {
+    document.querySelector('.battery').setAttribute('src', 'assets/img/battery-20.png');
+  } else if (battery < 40) {
+    
+  }
+}
 
 function getPowerConsumption(data) {
   const device = data.device_type;
