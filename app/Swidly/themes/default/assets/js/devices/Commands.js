@@ -58,14 +58,6 @@ class ReadSingleRegisterCommand {
        */
       const dataview = new DataView(filterResponse);
 
-      /*if (dataview.byteLength !== this.responseSize()) {
-        reject(
-          `Invalid response length. Expected ${this.responseSize()}, got ${
-            dataview.byteLength
-          }`
-        );
-      }*/
-
       /**
        * Parse the field from the data view.
        * @type {any}

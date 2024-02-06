@@ -13,10 +13,10 @@ const BatteryState = Object.freeze({
 });
 
 const UpsMode = Object.freeze({
-  0: "CUSTOMIZED",
-  1: "EPV_PRIORITY",
-  2: "STANDARD",
-  3: "TIME_CONTROL",
+  1: "CUSTOMIZED",
+  2: "EPV_PRIORITY",
+  3: "STANDARD",
+  4: "TIME_CONTROL",
 });
 
 const MachineAddress = Object.freeze({
@@ -128,6 +128,13 @@ const fields = [
     feld_type: FIELD_TYPE.version,
   }),
   new ReadSingleRegisterCommand({
+    name: "pack_bms_version",
+    page: 0x00,
+    offset1: 0xc9,
+    length: 0x2,
+    feld_type: FIELD_TYPE.version,
+  }),
+  new ReadSingleRegisterCommand({
     name: "power_generation",
     page: 0x00,
     offset: 0x29,
@@ -209,6 +216,7 @@ const fields = [
     offset: 0x56,
     unit: "v",
     field_type: FIELD_TYPE.decimal,
+    scale: 1,
   }),
   // battery details
   new ReadSingleRegisterCommand({
@@ -223,7 +231,7 @@ const fields = [
     offset: 0x5c,
     unit: "v",
     field_type: FIELD_TYPE.decimal,
-    scale: 2,
+    scale: 1,
   }),
   new ReadSingleRegisterCommand({
     name: "total_battery_current",
@@ -251,6 +259,8 @@ const fields = [
     offset: 0x62,
     unit: "v",
     field_type: FIELD_TYPE.decimal,
+    length: 0x2,
+    scale: 1,
   }),
   new ReadSingleRegisterCommand({
     name: "pack_battery_percent",

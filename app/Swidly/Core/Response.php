@@ -113,8 +113,11 @@ class Response
     #[NoReturn]
     public function json(): void
     {
-        // Clear output buffer
-		ob_clean();
+        if (ob_get_length() > 0) {
+            // Clear output buffer
+		    ob_clean();
+        }
+        
 		ob_start();
 			
 		// Create a Response object

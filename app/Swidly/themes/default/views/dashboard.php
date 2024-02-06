@@ -87,7 +87,7 @@
                 </div>
             </div>
         </section>
-        <div class="scrollable" style="height: 500px">
+        <div class="scrollable" style="height: calc(100vh - 155px);">
             <section style="margin-top: 1.4rem;">
                 <div style="width: 100%; height: 300px; position: relative;">
                     <button class="btn" style="position: absolute; left: 2rem; top: 30px;" onClick="myChart.resetZoom()">Reset Zoom</button>

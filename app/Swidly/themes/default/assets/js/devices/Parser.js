@@ -22,7 +22,7 @@ function arrayBufferToString(buffer) {
  * @return {number} The parsed uint field value.
  */
 const parse_uint_field = (value) => {
-  return value.getInt16(0);
+  return value.getInt16(0, false);
 };
 
 /**
@@ -70,7 +70,7 @@ const parse_serial_number_field = (value) => {
     value.getUint16(4, false),
     value.getUint16(6, false),
   ];
-  return values[0] | (values[1] << 16) | (values[2] << 32) | (values[3] << 48);
+  return values[0] + (values[1] << 16) + (values[2] << 32) + (values[3] << 48);
 };
 
 /**
@@ -91,7 +91,6 @@ const parse_version_field = (value) => {
  * @return {Array<number>} The parsed array of decimal values.
  */
 const parse_decimal_array = (value) => {
-    debugger;
     let values = dataViewToArray(value);
     return values.map(v => v / Math.pow(10, 2));
 }
