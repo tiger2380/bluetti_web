@@ -28,7 +28,6 @@ $this->get('/sw_admin/themes', function($req, $res) {
 $this->post('/api/monitoring', function($req, $res) {
     $data = $req->getDecoded();
 
-    $data['ip'] = $_SERVER['REMOTE_ADDR'];
     $sql = "INSERT INTO `monitoring`(`data`, `timestamp`, `user_id`) VALUES (?, ?, ?)";
 
     $payload = [
