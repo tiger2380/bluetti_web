@@ -101,6 +101,13 @@
       justify-content: space-between;
       align-items: center;
 
+      .icon {
+        font-family: 'Material Symbols Sharp';
+        font-weight: normal;
+        font-style: normal;
+        --icon-color: var(--color-info-dark);
+      }
+
       .text {
         p {
           font-weight: 700;
