@@ -55,7 +55,7 @@
                 <div class="block">
                     <div class="text">
                         <p>Battery Status</p>
-                        <small class="value" id="batteryStatus"></small>
+                        <small class="value" id="batteryStatus">0%</small> &bull; <small class="value" id="batteryVoltage">0v</small>
                     </div>
                     <div class="icon battery">
                         <span class=" material-symbols-sharp">
@@ -99,6 +99,12 @@
                     <button class="btn" style="position: absolute; left: 2rem; top: 30px;"
                         onClick="batteryLineChart.resetZoom()">Reset Zoom</button>
                     <canvas id="batteryLineChart"></canvas>
+                </div>
+                <hr />
+                <div style="width: 100%; height: 300px; position: relative;">
+                    <button class="btn" style="position: absolute; left: 2rem; top: 30px;"
+                        onClick="batterySoCChart.resetZoom()">Reset Zoom</button>
+                    <canvas id="batterySoCChart"></canvas>
                 </div>
             </section>
             <hr />

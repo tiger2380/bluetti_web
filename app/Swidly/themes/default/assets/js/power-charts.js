@@ -1,5 +1,6 @@
 const ctx = document.getElementById("myChart");
 const batteryLineCtx = document.getElementById("batteryLineChart");
+const batterySoCCtx = document.getElementById("batterySoCChart");
 
 const LIGHTTHEME = {
     backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -203,20 +204,17 @@ const batteryLineChart = new Chart(batteryLineCtx, {
     labels: [],
     datasets: [
       {
-        label: "Battery",
+        label: "Battery Power",
         data: [0, 0, 0, 0],
         backgroundColor: ["rgba(255, 99, 132, 0.8)"],
         borderColor: ["rgba(255, 99, 132, 1)"],
-        borderWidth: 1,
+        borderWidth: 2,
         pointStyle: false,
-      },
-      {
-        label: "Battery Voltage",
-        data: [0, 0, 0, 0],
-        backgroundColor: ["rgba(54, 162, 235, 0.8)"],
-        borderColor: ["rgba(54, 162, 235, 1)"],
-        borderWidth: 1,
-        pointStyle: false,
+        fill: {
+          target: "origin",
+          above: "rgba(5, 209, 100, 0.393)",
+          below: "rgba(255, 0, 55, 0.393)",
+        },
       },
     ],
   },
@@ -254,7 +252,7 @@ const batteryLineChart = new Chart(batteryLineCtx, {
     plugins: {
       title: {
         display: true,
-        text: "Battery View",
+        text: "Battery Power",
         color: "black",
       },
       legend: {
@@ -300,6 +298,100 @@ const batteryLineChart = new Chart(batteryLineCtx, {
 
 window.batteryLineChart = batteryLineChart;
 
+const batterySoCChart = new Chart(batterySoCCtx, {
+  type: "line",
+  data: {
+    labels: [],
+    datasets: [
+      {
+        label: "Battery SoC",
+        data: [0, 0, 0, 0],
+        backgroundColor: ["rgba(3, 213, 59, 0.332)"],
+        borderColor: ["rgba(2, 60, 15, 1)"],
+        borderWidth: 2,
+        pointStyle: false,
+        fill: true,
+      },
+    ],
+  },
+  options: {
+    interaction: {
+      intersect: false,
+      mode: "index",
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Time",
+          color: "black",
+        },
+        stacked: true,
+        ticks: {
+          color: "black",
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Battery (SoC %)",
+          color: "black",
+        },
+        ticks: {
+          color: "black",
+        },
+      },
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: "Battery state of charge",
+        color: "black",
+      },
+      legend: {
+        labels: {
+          color: "black",
+        },
+      },
+      subtitle: {
+        display: true,
+        text: "Click and drag to zoom | ctrl+drag to pan",
+        color: "black",
+        font: {
+          size: 12,
+          family: "arial, sans-serif",
+          weight: "normal",
+        },
+        padding: {
+          bottom: 10,
+        },
+      },
+      zoom: {
+        zoom: {
+          drag: {
+            enabled: true,
+          },
+          mode: "x",
+          onZoomComplete: (chart) => {
+            const zoomLevel = chart.chart.getZoomLevel();
+            if (zoomLevel < 1) {
+              chart.chart.resetZoom();
+            }
+          },
+        },
+        pan: {
+          enabled: true,
+          mode: "x",
+          modifierKey: "ctrl",
+        },
+      },
+    },
+  },
+});
+
 window.eventEmitter.on("update", async (data) => {
   const time = new Date();
   const timeStr =
@@ -334,11 +426,18 @@ window.eventEmitter.on("update", async (data) => {
   //}
 
   myChart.update();
+  const batteryLevel =
+    data.dc_input_power +
+    data.ac_input_power -
+    (data.ac_output_power + getPowerConsumption(data));
 
   batteryLineChart.data.labels.push(formatAMPM(time));
-  batteryLineChart.data.datasets[0].data.push(data.battery);
-  batteryLineChart.data.datasets[1].data.push(data.internal_pack_voltage);
+  batteryLineChart.data.datasets[0].data.push(batteryLevel);
   batteryLineChart.update();
+
+  batterySoCChart.data.labels.push(formatAMPM(time));
+  batterySoCChart.data.datasets[0].data.push(data.battery);
+  batterySoCChart.update();
 
   // attempt to calculate battery remaning time
   const batteryCapacity = 51.2 * 60; // 51.2v, 60Ah = 3072wh
@@ -367,10 +466,9 @@ window.eventEmitter.on("update", async (data) => {
   document.querySelector("#solarGaugeLabel").textContent = data.dc_input_power + 'w';
   document.querySelector('#gridGauge').setAttribute('value', data.ac_input_power);
   document.querySelector('#gridGaugeLabel').textContent = data.ac_input_power + 'w';
-
-  const batteryLevel = ((data.dc_input_power + data.ac_input_power) - (data.ac_output_power + getPowerConsumption(data)));
   document.querySelector('#batteryGauge').setAttribute('value', Math.floor(batteryLevel));
   document.querySelector('#batteryGaugeLabel').textContent = Math.floor(batteryLevel) + 'w';
+  document.querySelector('#batteryVoltage').textContent = data.total_battery_voltage + 'v';
 
   setBatteryIcon(data.battery);
 
@@ -395,10 +493,24 @@ window.eventEmitter.on("update", async (data) => {
 });
 
 function setBatteryIcon(battery) {
-  if (battery >= 80 || battery <= 100) {
-    document.querySelector('.battery').setAttribute('src', 'assets/img/battery-20.png');
-  } else if (battery < 40) {
-    
+  const batteryIcon = document.querySelector(".battery");
+  const batterySpan = batteryIcon.querySelector("span");
+
+  if (battery >= 80 && battery <= 100) {
+    batteryIcon.style.color = "#12db00";
+    batterySpan.textContent = 'battery_full'; // battery full
+  } else if (battery >= 60 && battery < 80) {
+    batteryIcon.style.color = '#ffcc00';
+    batterySpan.textContent = 'battery_4_bar'; // battery medium
+  } else if (battery >= 40 && battery < 60) {
+    batteryIcon.style.color = '#ff6666';
+    batterySpan.textContent = 'battery_2_bar'; // battery low
+  } else if (battery > 20 && battery < 40) {
+    batteryIcon.style.color = '#f60b0b';
+    batterySpan.textContent = 'battery_1_bar'; // battery very low
+  } else {
+    batteryIcon.style.color = '#000';
+    batterySpan.textContent = 'battery_0_bar'; // battery empty
   }
 }
 
