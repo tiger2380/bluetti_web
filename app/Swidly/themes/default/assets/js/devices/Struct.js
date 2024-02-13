@@ -223,6 +223,7 @@ class Struct {
 
       targetProxy[f.name] = val; // + this.unit;
       parsed[f.name] = val;
+      window.eventEmitter.emit("update", targetProxy.target);
     }
 
     return parsed;

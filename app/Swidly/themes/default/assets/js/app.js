@@ -8,11 +8,11 @@ Scrollbar.init(document.querySelector(".scrollable"));
  * Listen for incoming changes from Bluetti device.
  * This is where you can update the UI or save data to the database.
  */
-window.eventEmitter.on("update", (data) => {
+/*window.eventEmitter.on("update", (data) => {
   // updated data from bluetti device
-  //console.log(JSON.parse(data));
+  console.log(data);
  // document.querySelector("#details").innerHTML = syntaxHighlight(data);
-});
+});*/
 
 const button = document.querySelector("#conntectBluetooth");
 let isConnected = false;
@@ -215,7 +215,7 @@ function connect() {
           }
         );
         
-        const response = await Promise.timeout(promise, 10000).catch(($ex) => {
+        const response = await Promise.timeout(promise, 5000).catch(($ex) => {
           doSkip = true;
         });
 

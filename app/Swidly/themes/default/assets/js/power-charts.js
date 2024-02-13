@@ -393,10 +393,13 @@ const batterySoCChart = new Chart(batterySoCCtx, {
 });
 
 window.eventEmitter.on("update", async (data) => {
+  if (undefined === data) {
+    return;
+  }
   const time = new Date();
   const timeStr =
     time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
-
+  
   // reset power chart data and save image at 00:00:00 (24hr clock)
   if (timeStr === "00:00:00") {
     // take a capture of mychart canvas
