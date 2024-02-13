@@ -260,6 +260,9 @@ function connect() {
                       packCommand.startAddress,
                       body
                     );
+
+                    document.querySelector("#details").innerHTML =
+                      syntaxHighlight(result);
                   }
                 }
               }
