@@ -50,13 +50,13 @@ function convertCRC16ToBytes(crc16) {
 }
 
 function crc16String(data) {
-    const crc = crc16(data);
-    return crc.toString(16);
+  const crc = crc16(data);
+  return crc.toString(16);
 }
 
 function crc16HexString(data) {
-    const crc = crc16(data);
-    return crc.toString(16).padStart(4, "0");
+  const crc = crc16(data);
+  return crc.toString(16).padStart(4, "0");
 }
 
 const sleep = async (ms) => {
@@ -65,14 +65,37 @@ const sleep = async (ms) => {
 
 /**
  * Converts a DataView to an array.
- * 
+ *
  * @param {DataView} dataView - The DataView to be converted.
  * @return {Array<number>} The converted array.
  */
 function dataViewToArray(dataView) {
-    let array = [];
-    for(let i = 0; i < dataView.byteLength; i++) {
-        array.push(dataView.getUint8(i));
-    }
-    return array;
+  let array = [];
+  for (let i = 0; i < dataView.byteLength; i++) {
+    array.push(dataView.getUint8(i));
+  }
+  return array;
 }
+
+/**
+ * Creates an array of numbers in the specified range.
+ *
+ * @param {number} start - the start of the range
+ * @param {number} end - the end of the range
+ * @return {array} the array of numbers in the specified range
+ */
+function range(start, end) {
+  return Array.from({ length: end - start }, (_, i) => i + start);
+}
+
+window.parsed = {};
+window.targetProxy = new Proxy(parsed, {
+  set: function (target, key, value) {
+    if (typeof value === "string" && "undefined" != value.substring(0, 9)) {
+      target[key] = value;
+      console.log(target);
+      window.eventEmitter.emit("update", target);
+    }
+    return true;
+  },
+});

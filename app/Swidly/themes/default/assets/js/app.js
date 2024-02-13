@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var Scrollbar = window.Scrollbar;
 
@@ -11,7 +11,7 @@ Scrollbar.init(document.querySelector(".scrollable"));
 window.eventEmitter.on("update", (data) => {
   // updated data from bluetti device
   //console.log(JSON.parse(data));
-  document.querySelector("#details").innerHTML = syntaxHighlight(data);
+ // document.querySelector("#details").innerHTML = syntaxHighlight(data);
 });
 
 const button = document.querySelector("#conntectBluetooth");
@@ -56,7 +56,7 @@ let options = {
 const sendCommand = async (writeCharacteristic, command) => {
   try {
     await writeCharacteristic
-      .writeValueWithoutResponse(new Uint8Array(command))
+      .writeValueWithResponse(new Uint8Array(command))
       .catch((error) => {
         console.error("Error when writing value", error);
         return Promise.resolve()
@@ -84,7 +84,7 @@ const log = (message) => {
  * @param {string} text - The text to be logged.
  */
 const time = (text) => {
-  const currentTime = new Date().toLocaleTimeString('en-US', {hour12: false});
+  const currentTime = new Date().toLocaleTimeString("en-US", { hour12: false });
   log(`[${currentTime}] ${text}`);
 };
 
@@ -98,25 +98,48 @@ let bluetoothDevice;
  * @param {function} toTry - The function to execute.
  * @param {function} success - The success callback.
  * @param {function} fail - The failure callback.
- * @return {void} 
+ * @return {void}
  */
-const exponentialBackoff = (max, delay, toTry, success, fail) => {
-  toTry()
-    .then((result) => success(result))
-    .catch((_) => {
-      if (max === 0) {
-        return fail();
-      }
-      time("Retrying in " + delay + "s... (" + max + " tries left)");
-      setTimeout(function () {
-        exponentialBackoff(--max, delay * 2, toTry, success, fail);
-      }, delay * 1000);
-    });
+const exponentialBackoff = async (max, delay, toTry, success, fail) => {
+  const result = await toTry();
+
+  if (result) {
+    return success(result);
+  }
+
+  if (max === 0) {
+    return fail();
+  }
+
+  time("Retrying in " + delay + "s... (" + max + " tries left)");
+  setTimeout(function () {
+    exponentialBackoff(--max, delay, toTry, success, fail);
+  }, delay * 1000);
 };
 
-(() => {
+/**
+ * Append an ArrayBuffer to an existing ArrayBuffer.
+ * 
+ * @param {ArrayBuffer} existingBuffer - The existing ArrayBuffer.
+ * @param {ArrayBuffer} newBuffer - The new ArrayBuffer to be appended.
+ * @return {ArrayBuffer} The combined ArrayBuffer.
+ */
+function appendArrayBuffer(existingBuffer, newBuffer) {
+    // Calculate the total length of both buffers
+    let totalLength = existingBuffer.byteLength + newBuffer.byteLength;
 
-})();
+    // Create a new buffer of the total length
+    let result = new Uint8Array(totalLength);
+
+    // Copy the existing buffer to the result buffer
+    result.set(new Uint8Array(existingBuffer), 0);
+
+    // Copy the new buffer to the result buffer, offset by the length of the existing buffer
+    result.set(new Uint8Array(newBuffer), existingBuffer.byteLength);
+
+    // Return the result buffer
+    return result.buffer;
+}
 
 /**
  * Connects to a Bluetooth device using exponential backoff for retries.
@@ -142,6 +165,7 @@ function connect() {
     async function success(server) {
       log("> Bluetooth Device connected. Try disconnect it now.");
       log(`> Server connected: ${server}`);
+
       isConnected = true;
       const service = await server
         .getPrimaryService(SERVICEUUID)
@@ -161,69 +185,90 @@ function connect() {
         WRITECHARACTERISTICUUID
       );
 
+      const runCommand = async (command) => {
+        let doSkip = false;
+        const promise = command.resolver;
+        await sendCommand(writeCharacteristic, command.cmd);
+        const responseSize = command.responseSize;
+        let fullResponse = new ArrayBuffer();
+
+        characteristic.addEventListener(
+          "characteristicvaluechanged",
+          async function onCharacteristicValueChanged(event) {
+            if (fullResponse.byteLength < responseSize) {
+              fullResponse = appendArrayBuffer(
+                fullResponse,
+                event.target.value.buffer
+              );
+            } else {
+              doSkip = true;
+            }
+
+            if (fullResponse.byteLength === responseSize) {
+              characteristic.removeEventListener(
+                "characteristicvaluechanged",
+                onCharacteristicValueChanged,
+                false
+              );
+              promise.resolve(fullResponse);
+            }
+          }
+        );
+        
+        const response = await Promise.timeout(promise, 10000).catch(($ex) => {
+          doSkip = true;
+        });
+
+        if (doSkip) {
+          return;
+        }
+
+        return new DataView(response);
+      };
+
       /**
        * Executes a logging command.
        *
        * @return {Promise<void>} A promise that resolves when the logging command is complete.
        */
       const loggingCommand = async () => {
+        let result = "";
         try {
-          for (let idx in fields) {
-            const field = fields[idx];
-            let doSkip = false;
-            const queryRangeCommand = new QueryRangeCommand(
-              field.page,
-              field.offset,
-              field.length
-            );
-            const promise = field.resolver;
-            await sendCommand(writeCharacteristic, queryRangeCommand.cmd);
-
-            characteristic.addEventListener(
-              "characteristicvaluechanged",
-              async function onCharacteristicValueChanged(event) {
-                characteristic.removeEventListener(
-                  "characteristicvaluechanged",
-                  onCharacteristicValueChanged,
-                  false
-                );
-                promise.resolve(event.target.value);
+          for (let logging of clientDevice.loggingCommands) {
+            const response = await runCommand(logging);
+            if (response) {
+              if (logging.isValidResponse(response)) {
+                const body = logging.parseResponse(response);
+                result = await clientDevice.parse(logging.startAddress, body);
               }
-            );
-            const response = await Promise.timeout(promise, 1000).catch(() => {
-              doSkip = true;
-            });
-
-            if (doSkip) {
-              continue;
             }
+            //await sleep(100);
+          }
 
-            if (field.isValidResponse(response)) {
-              await field.parse(
-                field.page,
-                field.offest,
-                response,
-                field.length
-              );
+          for (let pack = 1; pack <= clientDevice.packNumMax; pack++) {
+            if (clientDevice.packNumMax > 1) {
+              const command = clientDevice.buildSetterCommand("pack_num", pack);
+              await runCommand(command);
+              await sleep(10);
+
+              for (let packCommand of clientDevice.packLoggingCommands) {
+                const response = await runCommand(packCommand);
+                if (response) {
+                  if (packCommand.isValidResponse(response)) {
+                    const body = packCommand.parseResponse(response);
+                    result = await clientDevice.parse(
+                      packCommand.startAddress,
+                      body
+                    );
+                  }
+                }
+              }
             }
           }
-          /*document.getElementById("ac_output").innerHTML =
-            parsed.ac_output_power;
-          document.getElementById("battery").innerHTML = parsed.battery;
-          document.getElementById("dc_input").innerHTML = parsed.dc_input_power;
-          document.getElementById("ac_input").innerHTML = parsed.ac_input_power;
-          document.getElementById("ac_output_state").innerHTML =
-            parsed.ac_output_state == "true" ? "ON" : "OFF";
-          document.getElementById("dc_output_state").innerHTML =
-            parsed.dc_output_date == "true" ? "ON" : "OFF";*/
 
-          /*await fetch("http://localhost:8000/server.php", {
-            method: "POST",
-            content: "application/json",
-            mode: "no-cors",
-            body: JSON.stringify(parsed),
-          });*/
-          await sleep(1000);
+          document.querySelector("#details").innerHTML =
+            syntaxHighlight(result);
+          await sleep(100);
           loggingCommand();
         } catch (error) {
           console.error("Error when sending command", error);
@@ -273,23 +318,30 @@ button.addEventListener("click", async () => {
     console.log("Device discovered", bluetoothDevice);
     bluetoothDevice.addEventListener("gattserverdisconnected", onDisconnected);
 
-    if (bluetoothDevice.name.includes('AC200')) {
-      const script = document.createElement('script');
+    window.addEventListener("beforeunload", () => {
+      if (bluetoothDevice.gatt.connected) {
+        bluetoothDevice.gatt.disconnect();
+      } else {
+        log("> Bluetooth Device is already disconnected");
+      }
+    });
+
+    if (bluetoothDevice.name.includes("AC200")) {
+      const script = document.createElement("script");
       script.src = `Swidly/themes/default/assets/js/devices/AC200.js`;
       script.defer = true;
       document.head.appendChild(script);
-    } else if (bluetoothDevice.name.includes('AC300')) {
-      const script = document.createElement('script');
-      script.src = `Swidly/themes/default/assets/js/devices/AC300.js`;
-      script.defer = true;
-      document.head.appendChild(script);
-    } else if(bluetoothDevice.name.includes('AC500')) {
-      const script = document.createElement('script');
+    } else if (bluetoothDevice.name.includes("AC300")) {
+      const AC300 = (await import("./devices/AC300.js")).default;
+      window.clientDevice = new AC300(bluetoothDevice.id, bluetoothDevice.name);
+      clientDevice.addFields();
+    } else if (bluetoothDevice.name.includes("AC500")) {
+      const script = document.createElement("script");
       script.src = `Swidly/themes/default/assets/js/devices/AC500.js`;
       script.defer = true;
       document.head.appendChild(script);
     } else {
-      log('> Unknown device: ' + bluetoothDevice.name);
+      log("> Unknown device: " + bluetoothDevice.name);
     }
 
     log(`> Device: ${bluetoothDevice.name}`);

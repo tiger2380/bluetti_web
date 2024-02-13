@@ -1,3 +1,5 @@
+import BluettiDevice from "./BluettiDevice.js";
+
 const OutputMode = Object.freeze({
   0: "STOP",
   1: "INVERTER_OUTPUT",
@@ -13,10 +15,10 @@ const BatteryState = Object.freeze({
 });
 
 const UpsMode = Object.freeze({
-  0: "CUSTOMIZED",
-  1: "EPV_PRIORITY",
-  2: "STANDARD",
-  3: "TIME_CONTROL",
+  1: "CUSTOMIZED",
+  2: "EPV_PRIORITY",
+  3: "STANDARD",
+  4: "TIME_CONTROL",
 });
 
 const MachineAddress = Object.freeze({
@@ -31,269 +33,101 @@ const AutoSleepMode = Object.freeze({
   5: "NEVER",
 });
 
-const fields = [
-  new ReadSingleRegisterCommand({
-    name: "device_type",
-    page: 0x00,
-    offset: 0x0a,
-    length: 6,
-    field_type: FIELD_TYPE.string,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "ac_output_power",
-    page: 0x00,
-    offset: 0x26,
-    length: 1,
-    unit: "w",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "ac_input_power",
-    page: 0x00,
-    offset: 0x25,
-    length: 1,
-    unit: "w",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "dc_input_power",
-    page: 0x00,
-    offset: 0x24,
-    length: 1,
-    unit: "w",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "dc_output_power",
-    page: 0x00,
-    offset: 0x27,
-    length: 1,
-    unit: "w",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "battery",
-    page: 0x00,
-    offset: 0x2b,
-    length: 1,
-    unit: "%",
-    field_type: FIELD_TYPE.uint32,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "serial_number",
-    page: 0x00,
-    offset: 0x11,
-    length: 4,
-    field_type: FIELD_TYPE.serial_number,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "ac_output_state",
-    page: 0x00,
-    offset: 0x30,
-    length: 1,
-    field_type: FIELD_TYPE.bool,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "dc_output_state",
-    page: 0x00,
-    offset: 0x31,
-    length: 1,
-    field_type: FIELD_TYPE.bool,
-  }),
-  // detail page
-  new ReadSingleRegisterCommand({
-    name: "ac_output_mode",
-    page: 0x00,
-    offset: 0x46,
-    length: 1,
-    field_type: FIELD_TYPE.enum,
-    enum: OutputMode,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "ac_output_voltage",
-    page: 0x00,
-    offset: 0x47,
-    length: 1,
-    unit: "v",
-    field_type: FIELD_TYPE.decimal,
-    scale: 1,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "arm_version",
-    page: 0x00,
-    offset: 0x17,
-    length: 2,
-    feld_type: FIELD_TYPE.version,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "dsp_version",
-    page: 0x00,
-    offset: 0x19,
-    length: 2,
-    feld_type: FIELD_TYPE.version,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "power_generation",
-    page: 0x00,
-    offset: 0x29,
-    length: 1,
-    unit: "w",
-    field_type: FIELD_TYPE.decimal,
-    scale: 1,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "internal_current_one",
-    page: 0x00,
-    offset: 0x48,
-    length: 1,
-    unit: "a",
-    field_type: FIELD_TYPE.decimal,
-  }),
+class AC200 extends BluettiDevice {
+  constructor(address, sn) {
+    super(address, "AC200", sn);
+  }
 
-  new ReadSingleRegisterCommand({
-    name: "internal_ac_frequency",
-    page: 0x00,
-    offset: 0x4a,
-    length: 1,
-    unit: "hz",
-    field_type: FIELD_TYPE.decimal,
-    scale: 2,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "total_battery_percent",
-    page: 0x00,
-    offset: 0x2b,
-    length: 1,
-    unit: "%",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "internal_power_one",
-    page: 0x00,
-    offset: 0x49,
-    length: 1,
-    unit: "w",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "internal_pack_voltage",
-    page: 0x00,
-    offset: 0x5c,
-    length: 1,
-    unit: "v",
-    field_type: FIELD_TYPE.decimal,
-    scale: 1,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "internal_dc_input_current",
-    page: 0x00,
-    offset: 0x58,
-    length: 1,
-    unit: "a",
-    field_type: FIELD_TYPE.decimal,
-    scale: 1,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "internal_dc_input_power",
-    page: 0x00,
-    offset: 0x57,
-    length: 1,
-    uint: "w",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "internal_dc_input_voltage",
-    page: 0x00,
-    offset: 0x56,
-    length: 1,
-    unit: "v",
-    field_type: FIELD_TYPE.decimal,
-  }),
-  // battery details
-  new ReadSingleRegisterCommand({
-    name: "pack_num_max",
-    page: 0x00,
-    offset: 0x5b,
-    length: 1,
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "total_battery_voltage",
-    page: 0x00,
-    offset: 0x5c,
-    length: 2,
-    unit: "v",
-    field_type: FIELD_TYPE.decimal,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "pack_num",
-    page: 0x00,
-    offset: 0x60,
-    length: 1,
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "pack_status",
-    page: 0x00,
-    offset: 0x61,
-    length: 1,
-    field_type: FIELD_TYPE.enum,
-    enum: BatteryState,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "pack_voltage",
-    page: 0x00,
-    offset: 0x62,
-    length: 1,
-    unit: "v",
-    field_type: FIELD_TYPE.decimal,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "pack_battery_percent",
-    page: 0x00,
-    offset: 0x63,
-    length: 1,
-    unit: "%",
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "cell_voltages",
-    page: 0x00,
-    offset: 0x69,
-    length: 16,
-    field_type: FIELD_TYPE.array,
-    scale: 2,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "pack_bms_version",
-    page: 0x00,
-    offset: 0xc9,
-    field_type: FIELD_TYPE.version,
-  }),
-  // controls
-  new ReadSingleRegisterCommand({
-    name: "pack_num",
-    page: 0x00,
-    offset: 0xbbe,
-    field_type: FIELD_TYPE.uint16,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "ac_output_on",
-    page: 0x00,
-    offset: 0xbbf,
-    field_type: FIELD_TYPE.bool,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "dc_output_on",
-    page: 0x00,
-    offset: 0xbc0,
-    field_type: FIELD_TYPE.bool,
-  }),
-  new ReadSingleRegisterCommand({
-    name: "auto_sleep_mode",
-    page: 0x00,
-    offset: 0xbf5,
-    field_type: FIELD_TYPE.enum,
-    enum: AutoSleepMode,
-  }),
-];
+  addFields() {
+    // Core
+    this.struct.addStringField("device_type", 10, 6);
+    this.struct.addSerialNumber("serial_number", 17);
+    this.struct.addVersionField("arm_version", 23);
+    this.struct.addVersionField("dsp_version", 25);
+    this.struct.addUintField("dc_input_power", 36);
+    this.struct.addUintField("ac_input_power", 37);
+    this.struct.addUintField("ac_output_power", 38);
+    this.struct.addUintField("dc_output_power", 39);
+    this.struct.addDecimalField("power_generation", 41, 1); // Total power generated since last reset (kwh)
+    this.struct.addUintField("total_battery_percent", 43);
+    this.struct.addBoolField("ac_output_on", 48);
+    this.struct.addBoolField("dc_output_on", 49);
+
+    // Details
+    this.struct.addEnumField("ac_output_mode", 70, OutputMode);
+    this.struct.addDecimalField("internal_ac_voltage", 71, 1);
+    this.struct.addDecimalField("internal_current_one", 72, 1);
+    this.struct.addUintField("internal_power_one", 73);
+    this.struct.addDecimalField("internal_ac_frequency", 74, 2);
+    this.struct.addDecimalField("internal_current_two", 75, 1);
+    this.struct.addUintField("internal_power_two", 76);
+    this.struct.addDecimalField("ac_input_voltage", 77, 1);
+    this.struct.addDecimalField("internal_current_three", 78, 1, [0, 100]);
+    this.struct.addUintField("internal_power_three", 79);
+    this.struct.addDecimalField("ac_input_frequency", 80, 2);
+    this.struct.addDecimalField("internal_dc_input_voltage", 86, 1);
+    this.struct.addUintField("internal_dc_input_power", 87);
+    this.struct.addDecimalField("internal_dc_input_current", 88, 1, [0, 15]);
+
+    // Battery Data
+    this.struct.addUintField("pack_num_max", 91);
+    this.struct.addDecimalField("total_battery_voltage", 92, 1);
+    this.struct.addDecimalField("total_battery_current", 93, 1);
+    this.struct.addUintField("pack_num", 96);
+    this.struct.addEnumField("pack_status", 97, BatteryState);
+    this.struct.addDecimalField("pack_voltage", 98, 2); // Full pack voltage
+    this.struct.addUintField("pack_battery_percent", 99);
+    this.struct.addDecimalArrayField("cell_voltages", 105, 16, 2);
+    this.struct.addVersionField("pack_bms_version", 201);
+
+    // Controls
+    this.struct.addEnumField("ups_mode", 3001, UpsMode);
+    this.struct.addBoolField("split_phase_on", 3004);
+    this.struct.addEnumField("split_phase_machine_mode", 3005, MachineAddress);
+    this.struct.addUintField("pack_num", 3006);
+    this.struct.addBoolField("ac_output_on", 3007);
+    this.struct.addBoolField("dc_output_on", 3008);
+    this.struct.addBoolField("grid_charge_on", 3011);
+    this.struct.addBoolField("time_control_on", 3013);
+    this.struct.addUintField("battery_range_start", 3015);
+    this.struct.addUintField("battery_range_end", 3016);
+    // 3031-3033 is the current device time & date without a timezone
+    this.struct.addBoolField("bluetooth_connected", 3036);
+    // 3039-3056 is the time control programming
+    this.struct.addEnumField("auto_sleep_mode", 3061, AutoSleepMode);
+  }
+
+  get packNumMax() {
+    return 4;
+  }
+
+  get pollingCommands() {
+    return [
+      new ReadHoldingRegisters(10, 42),
+      new ReadHoldingRegisters(70, 21),
+      new ReadHoldingRegisters(3000, 62),
+    ];
+  }
+
+  get packPollingCommands() {
+    return [new ReadHoldingRegisters(91, 37)];
+  }
+
+  get loggingCommands() {
+    return [
+      new ReadHoldingRegisters(0, 70),
+      new ReadHoldingRegisters(70, 21),
+      new ReadHoldingRegisters(3000, 62),
+    ];
+  }
+
+  get packLoggingCommands() {
+    return [new ReadHoldingRegisters(91, 119)];
+  }
+
+  get writableRanges() {
+    return range(3000, 3062);
+  }
+}
+
+export default AC200;

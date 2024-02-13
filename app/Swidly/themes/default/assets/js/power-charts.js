@@ -436,7 +436,7 @@ window.eventEmitter.on("update", async (data) => {
   batteryLineChart.update();
 
   batterySoCChart.data.labels.push(formatAMPM(time));
-  batterySoCChart.data.datasets[0].data.push(data.battery);
+  batterySoCChart.data.datasets[0].data.push(data.total_battery_percent);
   batterySoCChart.update();
 
   // attempt to calculate battery remaning time
@@ -445,7 +445,7 @@ window.eventEmitter.on("update", async (data) => {
   const outputLoad = data.ac_output_power || 1; // output load
   const inputLoad = (data.ac_input_power || 0) + (data.dc_input_power || 0); // input load (PV, Grid)
   const inverterEfficiency = 0.9; // 90% inverter efficiency
-  const totalBatteryPercentage = data.battery;
+  const totalBatteryPercentage = data.total_battery_percent;
   const timeRemaining =
     (batteryCapacity *
       batteryEfficiency *
@@ -456,7 +456,8 @@ window.eventEmitter.on("update", async (data) => {
  // const text2 = `~ ${timeRemaining.toFixed(2)} hours remaining. `;
   //  document.getElementById("remainingTime").innerHTML = text2;
     document.querySelector('#deviceName').innerHTML = data.device_type;
-    document.querySelector('#batteryStatus').innerHTML = data.battery + '%';
+    document.querySelector("#batteryStatus").innerHTML =
+      data.total_battery_percent + "%";
   document.querySelector('#pvInput').innerHTML = data.dc_input_power + 'w';
   document.querySelector('#loadGauge').setAttribute('value', data.ac_output_power);
   document.getElementById("loadGaugeLabel").textContent = data.ac_output_power + 'w';
@@ -470,7 +471,7 @@ window.eventEmitter.on("update", async (data) => {
   document.querySelector('#batteryGaugeLabel').textContent = Math.floor(batteryLevel) + 'w';
   document.querySelector('#batteryVoltage').textContent = data.total_battery_voltage + 'v';
 
-  setBatteryIcon(data.battery);
+  setBatteryIcon(data.total_battery_percent);
 
   if (batteryLevel < 0) {
     document
@@ -480,7 +481,7 @@ window.eventEmitter.on("update", async (data) => {
     document.querySelector('#batteryGauge').setAttribute('fill', '#12db00');
   }
 
-  const response = await fetch("/api/monitoring", {
+  /*const response = await fetch("/api/monitoring", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -489,7 +490,7 @@ window.eventEmitter.on("update", async (data) => {
   });
 
   const json = await response.json();
-  console.log(json);
+  console.log(json);*/
 });
 
 function setBatteryIcon(battery) {
@@ -505,7 +506,7 @@ function setBatteryIcon(battery) {
   } else if (battery >= 40 && battery < 60) {
     batteryIcon.style.color = '#ff6666';
     batterySpan.textContent = 'battery_2_bar'; // battery low
-  } else if (battery > 20 && battery < 40) {
+  } else if (battery > 20 && battery <= 39) {
     batteryIcon.style.color = '#f60b0b';
     batterySpan.textContent = 'battery_1_bar'; // battery very low
   } else {

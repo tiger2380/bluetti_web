@@ -70,7 +70,7 @@ const parse_serial_number_field = (value) => {
     value.getUint16(4, false),
     value.getUint16(6, false),
   ];
-  return values[0] + (values[1] << 16) + (values[2] << 32) + (values[3] << 48);
+  return values[0] | (values[1] << 16) | (values[2] << 32) | (values[3] << 48);
 };
 
 /**

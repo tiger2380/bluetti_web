@@ -176,7 +176,7 @@
 <?= Swidly\Core\Swidly::load_script_file('Parser', '/assets/js/devices') ?>
 <?= Swidly\Core\Swidly::load_script_file('Commands', '/assets/js/devices') ?>
 <?= Swidly\Core\Swidly::load_script_file('smooth-scrollbar', '/assets/js') ?>
-<?= Swidly\Core\Swidly::load_script_file('app', '/assets/js') ?>
+<?= Swidly\Core\Swidly::load_script_file('app', '/assets/js', true) ?>
 <?= Swidly\Core\Swidly::load_script_file('power-charts', '/assets/js') ?>
 <?= Swidly\Core\Swidly::load_script_file('dashboard', '/assets/js') ?>
 {@include 'inc/footer'}
