@@ -44,12 +44,12 @@
                 <div class="block">
                     <div class="text">
                         <p>Device</p>
-                        <small class="value" id="deviceName"></small>
+                        <small class="value" id="deviceName"></small><br/>
+                        <small>Serial Number: <span id="serialNumber"></span></small>
                     </div>
-                    <div class="icon">
-                        <span class="material-symbols-sharp">
-                            lightbulb
-                        </span>
+                    <div class="icon" style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <toggler-switch id="acToggle" type="ac" label="AC"></toggler-switch>
+                        <toggler-switch id="dcToggle" type="dc" label="DC"></toggler-switch>
                     </div>
                 </div>
                 <div class="block">
@@ -170,6 +170,7 @@
     integrity="sha512-wUYbRPLV5zs6IqvWd88HIqZU/b8TBx+I8LEioQ/UC0t5EMCLApqhIAnUg7EsAzdbhhdgW07TqYDdH3QEXRcPOQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <?= Swidly\Core\Swidly::load_script_file('gauge', '/assets/js/components') ?>
+<?= Swidly\Core\Swidly::load_script_file('toggler', '/assets/js/components') ?>
 <?= Swidly\Core\Swidly::load_script_file('EventEmitter', '/assets/js') ?>
 <?= Swidly\Core\Swidly::load_script_file('utils', '/assets/js') ?>
 <?= Swidly\Core\Swidly::load_script_file('enums', '/assets/js') ?>

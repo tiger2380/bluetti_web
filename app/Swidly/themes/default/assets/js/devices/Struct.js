@@ -222,6 +222,7 @@ class Struct {
       }
 
       targetProxy[f.name] = val; // + this.unit;
+      targetProxy["serial_number"] = clientDevice.sn;
       parsed[f.name] = val;
       window.eventEmitter.emit("update", targetProxy.target);
     }

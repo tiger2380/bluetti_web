@@ -473,6 +473,15 @@ window.eventEmitter.on("update", async (data) => {
   document.querySelector('#batteryGauge').setAttribute('value', Math.floor(batteryLevel));
   document.querySelector('#batteryGaugeLabel').textContent = Math.floor(batteryLevel) + 'w';
   document.querySelector('#batteryVoltage').textContent = data.total_battery_voltage + 'v';
+  document.querySelector("#serialNumber").textContent = data.serial_number;
+  
+  document
+    .querySelector("#acToggle")
+    .setAttribute("state", data.ac_output_on ? true : false);
+  
+   document
+     .querySelector("#dcToggle")
+     .setAttribute("state", data.dc_output_on ? true : false);
 
   setBatteryIcon(data.total_battery_percent);
 

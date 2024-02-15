@@ -8,11 +8,6 @@ Scrollbar.init(document.querySelector(".scrollable"));
  * Listen for incoming changes from Bluetti device.
  * This is where you can update the UI or save data to the database.
  */
-/*window.eventEmitter.on("update", (data) => {
-  // updated data from bluetti device
-  console.log(data);
- // document.querySelector("#details").innerHTML = syntaxHighlight(data);
-});*/
 
 const button = document.querySelector("#conntectBluetooth");
 let isConnected = false;
@@ -225,6 +220,28 @@ function connect() {
 
         return new DataView(response);
       };
+
+      window.eventEmitter.on("toggled", async (data) => {
+        const { type, state } = data;
+
+        if (type === "ac") {
+          const value = state ? 0x01 : 0x00;
+          const command = clientDevice.buildSetterCommand(
+            "ac_output_on",
+            value
+          );
+          await runCommand(command);
+          await sleep(10);
+        } else if (type === "dc") {
+          const value = state ? 0x01 : 0x00;
+          const command = clientDevice.buildSetterCommand(
+            "dc_output_on",
+            value
+          );
+          await runCommand(command);
+          await sleep(10);
+        }
+      });
 
       /**
        * Executes a logging command.
