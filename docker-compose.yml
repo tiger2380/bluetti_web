@@ -3,6 +3,7 @@ services:
   php-apache:
     ports:
       - "80:80"
+      - 8082:8082
     build: './build/php'
     volumes:
       - ./app:/var/www/html

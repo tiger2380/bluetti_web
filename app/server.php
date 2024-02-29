@@ -1,6 +1,10 @@
 <?php
-session_start();
-$input = file_get_contents('php://input');
+
+require './Swidly/Socket/Socket.php';
+require './Swidly/Socket/ConnectionString.php';
+
+//session_start();
+/*$input = file_get_contents('php://input');
 $decoded = json_decode($input, true);
 
 // connect to pdo database
@@ -22,4 +26,20 @@ $pdo = null;
 // return success
 echo json_encode(array(
     "success" => true
+));*/
+echo "Staring server \n";
+$socket = new SwidlySocket(new ConnectionString(
+    '0.0.0.0',
+    8082,
+    'tcp',
+    false,
 ));
+
+$socket->on('connecting', function(){
+    var_dump('connecting');
+});
+
+$socket->on('connected', function ($client) {
+    var_dump('connected');
+});
+$socket->connect();
