@@ -1,0 +1,53 @@
+.otp-card {
+  text-align: center;
+  margin: 1rem auto;
+}
+
+.otp-card-inputs {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 30px;
+  justify-content: center;
+  grid-template-columns: repeat(5, auto);
+}
+
+.otp-card-inputs input {
+  width: 50px;
+  height: 60px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 2rem;
+  outline: none;
+}
+
+.otp-card-inputs input:focus {
+  border-color: #000;
+  outline: 2px solid blueviolet;
+}
+
+.otp-card button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: blueviolet;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.otp-card button:hover {
+  background-color: #fff;
+  color: blueviolet;
+  border: 1px solid blueviolet;
+}
+
+.otp-card button:disabled {
+  background-color: #ccc;
+  color: #fff;
+  border: none;
+  cursor: not-allowed;
+}

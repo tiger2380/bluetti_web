@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  php-apache:
+    ports:
+      - "80:80"
+      - 8082:8082
+    build: './build/php'
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mysql
+
+  mysql:
+    ports:
+      - "3307:3306"
+    build: './build/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD: "super-secret-password"
+      MYSQL_DATABASE: "bluetti"
+      MYSQL_USER: "bluetti"
+      MYSQL_PASSWORD: "bluetti"
+    volumes:
+      - dbData:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      - PMA_ARBITRARY=1
+volumes:
+  app:
+  dbData:
