@@ -49,6 +49,7 @@ class AC300 extends BluettiDevice {
     this.struct.addUintField("ac_input_power", 37);
     this.struct.addUintField("ac_output_power", 38);
     this.struct.addUintField("dc_output_power", 39);
+    this.struct.addUintField ('unknown_addr_42', 42);
     this.struct.addDecimalField("power_generation", 41, 1); // Total power generated since last reset (kwh)
     this.struct.addUintField("total_battery_percent", 43);
     this.struct.addBoolField("ac_output_on", 48);
@@ -83,6 +84,8 @@ class AC300 extends BluettiDevice {
 
     // Controls
     this.struct.addEnumField("ups_mode", 3001, UpsMode);
+    this.struct.addUintField("unknown_addr_3002", 3002);
+    this.struct.addUintField("unknown_addr_3003", 3003);
     this.struct.addBoolField("split_phase_on", 3004);
     this.struct.addEnumField("split_phase_machine_mode", 3005, MachineAddress);
     this.struct.addUintField("pack_num", 3006);

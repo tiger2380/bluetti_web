@@ -278,6 +278,7 @@ function connect() {
                       body
                     );
 
+                    
                     document.querySelector("#details").innerHTML =
                       syntaxHighlight(result);
                   }

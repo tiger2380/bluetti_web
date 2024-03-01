@@ -1,8 +1,42 @@
 const parsed = {};
+let isSocketConnected = false;
+let hasSubscribed = false;
+let serialNumber = null;
+const socket = new WebSocket("ws://127.0.0.1:8082");
+socket.onopen = function (e) {
+  isSocketConnected = true;
+  window.eventEmitter.emit("socket_connected");
+};
+
+socket.onmessage = function (event) {
+  alert(`[message] Data received from server: ${event.data}`);
+};
+
+socket.onclose = function (event) {
+  if (event.wasClean) {
+    window.eventEmitter.emit("socket_closed_cleanly",  event);
+    alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    window.eventEmitter.emit("socket_closed",  event);
+  }
+
+  isSocketConnected = false;
+};
+
 var targetProxy = new Proxy(parsed, {
   set: function (target, key, value) {
     if (typeof value === "string" && "undefined" != value.substring(0, 9)) {
       target[key] = value;
+
+      if (isSocketConnected) {
+        if (!hasSubscribed && key === 'serial_number') {
+          serialNumber = value;
+          socket.send(JSON.stringify({ type: 'subscribe', name: 'devices/' + serialNumber + '/commands' }));
+          hasSubscribed = true;
+        }
+
+        socket.send(JSON.stringify({ type: 'publish', name: 'devices/' + serialNumber + '/commands', data: target }));
+      }
 
       window.eventEmitter.emit("update", target);
     }
