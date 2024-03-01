@@ -24,7 +24,7 @@ socket.onclose = function (event) {
 };
 
 var targetProxy = new Proxy(parsed, {
-  set: function (target, key, value) {
+  set: async function (target, key, value) {
     if (typeof value === "string" && "undefined" != value.substring(0, 9)) {
       target[key] = value;
 
@@ -33,6 +33,7 @@ var targetProxy = new Proxy(parsed, {
           serialNumber = value;
           socket.send(JSON.stringify({ type: 'subscribe', name: 'devices/' + serialNumber + '/commands' }));
           hasSubscribed = true;
+          await sleep(1000);
         }
 
         socket.send(JSON.stringify({ type: 'publish', name: 'devices/' + serialNumber + '/commands', data: target }));
