@@ -1,8 +1,8 @@
 "use strict";
 
-var Scrollbar = window.Scrollbar;
+/*var Scrollbar = window.Scrollbar;
 
-Scrollbar.init(document.querySelector(".scrollable"));
+Scrollbar.init(document.querySelector(".scrollable"));*/
 
 /**
  * Listen for incoming changes from Bluetti device.

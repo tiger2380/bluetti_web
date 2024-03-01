@@ -6,6 +6,9 @@
             <a href="/dashboard">
                 <h1><?= Swidly\Core\Swidly::getTItle() ?></h1>
             </a>
+            <span class="material-symbols-sharp close">
+                close
+            </span>
         </div>
         <div class="sidebar">
             <nav>
@@ -30,9 +33,38 @@
             </nav>
         </div>
     </aside>
+    <section id="top">
+        <div class="left-items">
+            <span class="material-symbols-sharp">
+                menu
+            </span>
+        </div>
+        <div class="right-items">
+            <div class="user-notifications">
+                <div class="dark-mode">
+                    <span class="material-symbols-sharp active">
+                        light_mode
+                    </span>
+                    <span class="material-symbols-sharp">
+                        dark_mode
+                    </span>
+                </div>
+                <button id="conntectBluetooth" class="btn">
+                <span class="material-symbols-sharp">
+                    bluetooth
+                </span>
+            </button>
+            <button id="disconnectBluetooth" class="btn">
+                <span class="material-symbols-sharp">
+                    bluetooth_disabled
+                </span>
+            </button>
+            </div>
+        </div>
+    </section>
     <main>
-        <h2>Dashboard</h2>
-        <section>
+        <section style="padding: 1rem 2rem;">
+            <h2>Dashboard</h2>
             <h3>
                 Overview
                 <small>Today</small>
@@ -46,10 +78,6 @@
                         <p>Device</p>
                         <small class="value" id="deviceName"></small><br/>
                         <small>Serial Number: <span id="serialNumber"></span></small>
-                    </div>
-                    <div class="icon" style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <toggler-switch id="acToggle" type="ac" label="AC"></toggler-switch>
-                        <toggler-switch id="dcToggle" type="dc" label="DC"></toggler-switch>
                     </div>
                 </div>
                 <div class="block">
@@ -87,6 +115,32 @@
                 </div>
             </div>
         </section>
+        <div class="side-charts">
+            <div style="flex: 1; width: 100%;">
+                <semi-gauge id="loadGauge" maxValue="5000" value="0">
+                    <span slot="label" id="loadGaugeLabel" class="label">0w</span>
+                    <p>Load</p>
+                </semi-gauge>
+            </div>
+            <div style="flex: 1; width: 100%;">
+                <semi-gauge id="solarGauge" maxValue="3000" value="0" fill="#ffcc66">
+                    <span slot="label" id="solarGaugeLabel" class="label">0w</span>
+                    <p>Solar PV</p>
+                </semi-gauge>
+            </div>
+            <div style="flex: 1; width: 100%;">
+                <semi-gauge id="gridGauge" maxValue="5000" value="0" fill="#80bfff">
+                    <span slot="label" id="gridGaugeLabel" class="label">0w</span>
+                    <p>Grid</p>
+                </semi-gauge>
+            </div>
+            <div style="flex: 1; width: 100%;">
+                <semi-gauge id="batteryGauge" maxValue="5000" value="0" fill="#ff6666">
+                    <span slot="label" id="batteryGaugeLabel" class="label">0w</span>
+                    <p>Battery</p>
+                </semi-gauge>
+            </div>
+        </div>
         <div class="scrollable" style="height: calc(100vh - 155px);">
             <section style="margin-top: 1.4rem;">
                 <div style="width: 100%; height: 300px; position: relative;">
@@ -119,51 +173,8 @@
             </section>
         </div>
     </main>
-    <article>
-        <div class="user-notifications">
-            <div class="dark-mode">
-                <span class="material-symbols-sharp active">
-                    light_mode
-                </span>
-                <span class="material-symbols-sharp">
-                    dark_mode
-                </span>
-            </div>
-            <button id="conntectBluetooth" class="btn">
-                <span class="material-symbols-sharp">
-                    bluetooth
-                </span>
-                Connect
-            </button>
-        </div>
-        <div class="side-charts">
-            <div style="flex: 1; width: 100%;">
-                <semi-gauge id="loadGauge" maxValue="5000" value="0">
-                    <span slot="label" id="loadGaugeLabel" class="label">0w</span>
-                    <p>Load</p>
-                </semi-gauge>
-            </div>
-            <div style="flex: 1; width: 100%;">
-                <semi-gauge id="solarGauge" maxValue="3000" value="0" fill="#ffcc66">
-                    <span slot="label" id="solarGaugeLabel" class="label">0w</span>
-                    <p>Solar PV</p>
-                </semi-gauge>
-            </div>
-            <div style="flex: 1; width: 100%;">
-                <semi-gauge id="gridGauge" maxValue="5000" value="0" fill="#80bfff">
-                    <span slot="label" id="gridGaugeLabel" class="label">0w</span>
-                    <p>Grid</p>
-                </semi-gauge>
-            </div>
-            <div style="flex: 1; width: 100%;">
-                <semi-gauge id="batteryGauge" maxValue="5000" value="0" fill="#ff6666">
-                    <span slot="label" id="batteryGaugeLabel" class="label">0w</span>
-                    <p>Battery</p>
-                </semi-gauge>
-            </div>
-        </div>
-    </article>
 </div>
+{@include 'inc/bottomMenu'}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"
